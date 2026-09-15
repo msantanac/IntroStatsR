@@ -1,0 +1,41 @@
+## Sobre el curso {.unnumbered}
+
+-   **Nombre:** Introducción a la Estadística usando R Notebooks
+-   **Instructor:** Dr. Mario Santana Cibrian
+-   **Email:** [msantana\@unam.mx](mailto:msantana@unam.mx){.email}
+-   **Duración:** 20 horas
+-   **Horario:** 9:00 - 13:00, lunes a viernes
+-   **Software:** R y RStudio
+
+## Acceso internet
+
+-   **Nombre de la red:**
+-   **Contraseña:**
+
+## Objetivo
+
+Este curso tiene como objetivo dar una introducción a algunas de las herramientas
+estadísticas más usadas para el análisis de datos en el ámbito científico. El curso se
+enfocará principalmente en mostrar el uso del lenguaje R para realizar tareas como:
+procesamiento y visualización de datos, obtención de intervalos de confianza, pruebas de
+hipótesis, análisis de varianza, evaluación de normalidad y regresión lineal.
+
+El curso está dirigido principalmente a personas con poca experiencia en Estadística y
+programación.
+
+## Temario
+
+1.  Introducción a R, R-Studio y Markdown.
+2.  Estadística descriptiva y visualización de datos.
+3.  Inferencia estadística (estimación puntual, intervalos de confianza y pruebas de hipótesis).
+4.  Análisis de varianza.
+5.  Correlación y regresión lineal.
+
+## Material
+
+Todo el material del curso está disponible en el repositorio  [IntroStatsR](https://github.com/msantanac/IntroStatsR) de GitHub.
+
+## Constancia
+
+La constancia se otorgará a los participantes que cumplan con el 80% de asistencia y el
+80% de las actividades.

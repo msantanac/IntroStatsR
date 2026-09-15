@@ -1,0 +1,190 @@
+# Introducción a R, R-Studio y Markdown
+
+## R
+
+-   **R** es un lenguaje de programación y un entorno de software diseñado
+    principalmente para el análisis estadístico y la visualización de datos.
+
+-   Es ampliamente utilizado por estadísticos, analistas de datos y científicos
+    para procesar, analizar y representar datos de manera efectiva.
+
+-   Es un lenguaje de código abierto, lo que significa que su uso y distribución
+    son gratuitos, y tiene una gran comunidad de usuarios que constantemente
+    contribuyen a su desarrollo.
+
+-   Es un lenguaje interpretado y orientado a objetos.
+
+### Características clave de R:
+
+1.  **Estadísticas avanzadas**: **R** tiene una vasta gama de funciones y
+    paquetes dedicados al análisis estadístico, desde pruebas básicas hasta
+    modelos complejos.
+2.  **Visualización de datos**: R es conocido por sus potentes capacidades de
+    visualización. Con paquetes como `ggplot2` y `plotly`, puedes crear gráficos de alta
+    calidad y personalizados.
+3.  **Gran ecosistema de paquetes**: Existen miles de paquetes disponibles para
+    extender las funcionalidades de R en diversos campos, como bioinformática,
+    econometría, análisis de redes, machine learning, entre otros.
+4.  **Manipulación de datos**: Paquetes como `dplyr` y `tidyr` facilitan la
+    manipulación y transformación de datos, lo que es crucial en el análisis de
+    grandes volúmenes de información.
+5.  **Integración**: R puede integrarse con otros lenguajes de programación y
+    bases de datos, lo que lo hace flexible y versátil para diferentes tipos de
+    proyectos.
+6.  **Fácil de aprender**: La curva de aprendizaje es moderada comparada con otros
+lenguajes como Python, Matlab, etc.
+
+### Instalación
+
+**R** puede descargarse desde el [sitio oficial](https://cran.r-project.org/).
+
+![Interfaz de R.](Imagenes\R_interface.png)
+
+## RStudio
+
+-   **RStudio** es un entorno de desarrollo integrado (IDE, por sus siglas en
+    inglés) diseñado específicamente para **R**, que facilita el trabajo con
+    este lenguaje.
+
+-   Proporciona una interfaz gráfica rica en herramientas que simplifica la
+    escritura de código, la ejecución de análisis y la creación de gráficos,
+    además de ofrecer potentes características de depuración y documentación.
+
+-   **RStudio** está disponible de forma gratuita, aunque también existe una
+    versión comercial (RStudio Server Pro) con características adicionales para
+    equipos y organizaciones.
+
+### Características principales de RStudio:
+
+1.  **Interfaz amigable**: RStudio organiza sus herramientas en paneles,
+    facilitando la visualización y manipulación de datos, gráficos, código y
+    resultados.
+2.  **Soporte para proyectos**: Puedes organizar tu trabajo en proyectos, lo que
+    facilita la gestión de scripts, datos y resultados de manera estructurada.
+3.  **Editor de código**: El editor tiene características avanzadas como el
+    autocompletado de código, resaltado de sintaxis, y herramientas de
+    depuración.
+4.  **Visualización de resultados**: Los resultados de los cálculos y los
+    gráficos se muestran directamente en la interfaz, lo que permite una
+    experiencia interactiva de análisis.
+5.  **Panel de gráficos, consola y scripts**: La pantalla de RStudio está
+    dividida en varios paneles que permiten trabajar de manera más eficiente con
+    diferentes tipos de datos y resultados.
+6.  **Integración con paquetes**: RStudio facilita la instalación y carga de
+    paquetes.
+7.  **Herramientas de depuración**: Incluye herramientas para hacer depuración
+    de código, lo que permite encontrar y solucionar errores de manera más
+    efectiva.
+
+### ¿Cómo empezar con RStudio?
+
+1.  Instalar R.
+2.  Descargar **RStudio** desde el [sitio oficial](https://posit.co/downloads) e instalar.
+
+![Interfaz de R-Studio.](Imagenes\RStudio.png)
+
+## Markdown
+
+-   Markdown es un lenguaje que permite escribir documentos de forma sencilla y
+    legible, utilizando una sintaxis muy fácil de aprender.
+-   Fue creado por John Gruber en 2004 con el objetivo de convertir texto plano
+    en un formato HTML legible y bien estructurado.
+-   Es utilizado principalmente para la creación de documentos, blogs,
+    documentación técnica y en plataformas de desarrollo como GitHub, donde se
+    emplea para generar archivos `README.md`, entre otros.
+
+### Características de Markdown:
+
+1.  **Sencillez**: Markdown se escribe en texto plano y es fácil de aprender y
+    usar.
+2.  **Legibilidad**: A diferencia de otros lenguajes como HTML, el contenido en
+    Markdown es legible incluso sin ser procesado.
+3.  **Compatibilidad**: Markdown puede convertirse fácilmente en otros formatos
+    como HTML, PDF, entre otros.
+4.  **Formato enriquecido**: Aunque es un lenguaje ligero, permite crear
+    documentos bien estructurados con encabezados, listas, tablas, enlaces,
+    imágenes, etc.
+
+### Sintaxis básica de Markdown
+
+1.  **Encabezados**: Los encabezados se crean usando el símbolo `#`, donde el
+    número de `#` indica el nivel del encabezado (de 1 a 6).
+
+    ``` markdown
+    # Encabezado de nivel 1
+    ## Encabezado de nivel 2
+    ### Encabezado de nivel 3
+    #### Encabezado de nivel 4
+    ##### Encabezado de nivel 5
+    ###### Encabezado de nivel 6
+    ```
+
+2.  **Negritas y Cursivas**:
+
+    -   **Negrita**: Se usa con dos asteriscos `**` o dos guiones bajos `__`.
+    -   **Cursiva**: Se usa con un asterisco `*` o un guion bajo `_`.
+
+3.  **Listas**: Markdown permite crear listas ordenadas y no ordenadas.
+
+    -   **Listas no ordenadas**: Se utilizan asteriscos `*`, guiones `-` o más
+        comunes, los signos de adición `+`.
+
+    ``` markdown
+    * Elemento de lista 1
+    * Elemento de lista 2
+    * Elemento de lista 3
+    ```
+
+    -   **Listas ordenadas**: Se crean con números seguidos de un punto.
+
+    ``` markdown
+    1. Primer elemento
+    2. Segundo elemento
+    3. Tercer elemento
+    ```
+
+4.  **Enlaces**: Los enlaces se escriben con corchetes `[]` para el texto del
+    enlace y paréntesis `()` para la URL.
+
+    ``` markdown
+    [Texto del enlace](http://www.ejemplo.com)
+    ```
+    [Markdown](https://rmarkdown.rstudio.com/)
+
+5.  **Imágenes**: Similar a los enlaces, pero anteponiendo un signo de
+    exclamación `!`.
+
+    ``` markdown
+    ![Texto alternativo](url_de_imagen.jpg)
+    ```
+    ![](Imagenes\RStudio-Logo-Flat.png){width=250px height=250px}
+    ![](Imagenes\cat.png){width=250px height=250px}
+
+6.  **Código**: Para insertar bloques de código **R** se utilizan tres comillas invertidas \`\`\` antes y después del código:
+
+    ``` {r}
+    print("Hello world!")
+    ```
+
+
+8.  **Tablas**: Las tablas se crean utilizando guiones `-` y barras verticales
+    `|`.
+
+    ``` markdown
+    | Encabezado 1 | Encabezado 2 |
+    |--------------|--------------|
+    | Fila 1, Columna 1 | Fila 1, Columna 2 |
+    | Fila 2, Columna 1 | Fila 2, Columna 2 |
+    ```
+    | Encabezado 1 | Encabezado 2 |
+    |--------------|--------------|
+    | Fila 1, Columna 1 | Fila 1, Columna 2 |
+    | Fila 2, Columna 1 | Fila 2, Columna 2 |
+
+9. **Videos**: Es posible insertar videos desde archivos o desde internet utilizando comandos **HTML**.
+
+    ``` markdown
+    <iframe src="https://www.youtube.com/embed/6A5EpqqDOdk" data-external="1">
+    ```
+    <iframe src="https://www.youtube.com/embed/6A5EpqqDOdk" data-external="1">
+

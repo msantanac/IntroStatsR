@@ -1,0 +1,162 @@
+# Regresión lineal
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+library(ISLR2)
+library(plotly)
+```
+
+Suponga que tenemos dos variables cuantitativas, $X$ y $Y$. A $Y$ se le conoce como variable respuesta y es la variable que queremos estudiar. A la variable $X$ se le conoce como variable independiente, variable predictora o covariable, y es una variable que creemos que está relacionada con la variable $Y$.
+
+Un modelo de regresión lineal simple describe la relación entre una variable de interés $Y$ y una variable predictora $X$. Esta relación permite predecir el valor de $Y$ si se conoce $X$. 
+
+
+Lo primero que tenemos que hacer antes de comenzar a realziar un análisis de regresión es estudiar la relación entre la variable respuesta y las variables predictoras. Para esto usamos dos herramientas: gráficas de dispersión y medidas de correlación.
+
+## Ejemplo
+
+Se tienen datos sobre la cantidad de ventas de un cierto producto y el dinero invertido en publicidad en tres medios: televisión, radio y periódicos.
+
+```{r}
+rm(list = ls())
+D = read.csv("Data/Advertising.csv", header = TRUE, as.is = TRUE)
+str(D)
+
+pairs(D[, 2:5])
+```
+
+Las gráficas de dispersión muestra relaciones entra la variable respuesta **Sales** y las variables predictoras **TV**, **Radio** y **Newspaper**. Para entender mejor las relaciones, calculamos el coeficiente de correlación $\rho$ de cada par de variables, el cual es un número entre -1 y 1 que indica el nivel de relación lineal entre dos variables. El coeficiente de correlación se interpreta como sigue:
+
+- Si $\rho$ es muy cercano a 1, entonces la relación lineal es fuerte y positiva, es decir, cuando una variable crece, la otra variable también crece.
+
+- Si $\rho$ es muy cercano a -1, entonces la relación lineal es fuerte, pero negativa, es decir, cuando una variable crece, la otra decrece.
+
+- Si $\rho$ es cercano a 0, entonces las variables no están relacionadas linealmente. No obstante, esto no implica que las variables sean independientes, salvo cuando estas variables son normales.
+
+El coeficiente de correlación de cada par de variables se puede mostrar en una matriz o en un mapa de calor. Los resultados para el dataset Advertising se muestran abajo y corrboran que las variables más relacionadas linealmente son SALES, TV y RADIO. 
+
+```{r}
+R = cor(D[, 2:5])
+print(R)
+plot_ly(type = "heatmap",
+        x = colnames(R),
+        y = rownames(R),
+        z = R,
+        colors = "Blues")
+```
+
+# El modelo de regresión lineal
+
+Vamos a suponer que las variables $X$ y $Y$ están relacionadas por el modelo
+
+$$ Y = \beta_0 + \beta_1 X + \epsilon,
+$$
+
+donde $\beta_0$ y $\beta_1$ se conocen como **coeficientes de regesión**, y $\epsilon$ es un término de error aleatorio que sigue una distribución $N(0, \sigma)$. Aquí, $\beta_0$ respresenta el valor de $Y$ cuando $X=0$, el cual puede no tener sentido en algunos contextos. Más aún, $\beta_1$ representa el cambio promedio en $Y$ por cada unidad de cambio en $X$.
+
+Para implementar un modelo de regresión, necesitamos estimar los valores de los coeficientes de regresión. Para esto se utiliza un esquema de mínimos cuadrados, es decir, resolver el problema de optimización
+
+$$ \min_{\beta_0, \beta_1}\sum_{i=1}^n (y_i - \hat{y}_i)^2,
+$$
+donde $\hat{y}_i = \beta_0 + \beta_1 x_i$ es el valor predicho del modelo, el cual depende de los coeficiente de regresión.
+
+En R, usamos el comando `lm` para ajustar el modelo de regresión.
+
+```{r}
+model = lm(Sales ~ TV, data = D)
+summary(model)
+```
+
+Podemos visualizar la recta de regresión.
+
+```{r}
+plot(D$TV, D$Sales, pch = 16, col ="gray", xlab = "TV", ylab = "Ventas")
+abline(a = model$coefficients[1],
+       b = model$coefficients[2], col ="red",
+       lwd = 3)
+```
+
+Sabemos que los estimadores que obtuvimos para los coeficientes de regresión son dependientes de la muestra que tenemos. Podemo generar intervalos de confianza para evaluar su variabilidad muestral.
+
+```{r}
+confint(model, level = 0.99)
+```
+
+Podemos crear bandas de confianza para la recta de regresión.
+
+```{r}
+x = seq(min(D$TV), max(D$TV), length.out = 100)
+new.data = data.frame(TV = x)
+pred = predict(model, new.data, interval = "confidence")
+
+plot(D$TV, D$Sales, col ="gray", pch = 16)
+lines(x, pred[, 1], col="red")
+lines(x, pred[, 2], col = "blue")
+lines(x, pred[, 3], col = "blue")
+```
+
+Podemos crear bandas de predicción que nos indiquen que pasaría para un sólo individuo, en lugar de con un promedio de individuos.
+
+```{r}
+pred2 = predict(model, new.data, interval = "prediction")
+plot(D$TV, D$Sales, col ="gray", pch = 16)
+lines(x, pred[, 1], col="red")
+lines(x, pred[, 2], col = "blue")
+lines(x, pred[, 3], col = "blue")
+lines(x, pred2[, 2], col = "magenta")
+lines(x, pred2[, 3], col = "magenta")
+```
+
+Para diagnosticar el modelo, podemos usar el coeficiente $R^2$, el cual nos indica el porcentaje de variabilidad de los datos que es recuperado por el modelo. Entre más grande el valor de $R^2$, mejor es el modelo. Hay que tener cuidado con la interpretación de este número ya que, al igual que el coeficiente de correlación, puede llegar a ser engañoso.
+
+```{r}
+summary(model)
+```
+
+Podemos diagnosticar los supuestos de normalidad del modelo de regrsión a través de gráficas de residuales.
+
+```{r}
+par(mfrow = c(2,2)) # divide al ventana gráfica en una matriz de dos renglones y dos columnas
+plot(model)
+```
+
+# Modelo de regresión lineal multiple
+
+Queremos describir una variable respuesta $Y$ a partir de muchas varaibles predictoras $X_1, X_2,...., X_k$. Para esto, usamos el siguiente modelo:
+$$ Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2\ldots + \beta_k X_K + \epsilon,
+$$
+
+```{r}
+model2 = lm(Sales ~ TV + Radio + Newspaper, data = D)
+summary(model2)
+```
+
+Aquí podemos diagnosticar el modelo con las gráficas de residuales.
+
+```{r}
+par(mfrow = c(2,2))
+plot(model2)
+```
+
+# Ejemplo 2: Datos Credit
+
+```{r}
+str(Credit)
+pairs(Credit)
+```
+
+Vamos a intentar hacer un modelo que prediga Balance usando todas la variables disponibles, incluyendo la varaibles categóricas.
+
+```{r}
+model3 = lm(Balance ~ ., data = Credit)
+summary(model3)
+
+model4 = lm(Balance ~ Income + Limit + Cards + Student, data = Credit )
+summary(model4)
+```
+
+```{r}
+D = Credit[Credit$Balance != 0, ]
+str(D)
+model5 = lm(Balance ~ Income + Limit + Cards + Student, data = D )
+summary(model5)
+```

@@ -1,0 +1,635 @@
+# Estadística Descriptiva
+
+La estadística descriptiva es la rama de la estadística que se encarga de recolectar, organizar, resumir y presentar un conjunto de datos con el objetivo de describir de manera rápida y clara sus características principales.
+
+A diferencia de la estadística inferencial (que busca hacer predicciones o generalizaciones a partir de una muestra), la descriptiva no asume nada más allá de los datos que tienes enfrente. Su meta es, simplemente, transformar números brutos en información fácil de entender.
+
+## Tipos de datos
+
+En estadística y análisis de datos, los datos se clasifican principalmente según su **naturaleza** y su **escala de medición**. Esta división es fundamental porque define qué tipo de operaciones matemáticas, gráficos y análisis estadísticos se pueden aplicar.
+
+La clasificación principal se divide en dos grandes familias: **cualitativos** y **cuantitativos**.
+
+### Datos Cualitativos (o Categóricos)
+
+Son aquellos que expresan características, cualidades o atributos, y **no se pueden medir numéricamente** de forma directa. Indican a qué categoría pertenece un elemento. Estos se subdividen en: **ordinales** y **nominales**.
+
+#### Nominales
+
+Son datos que establecen categorías mutuamente excluyentes, pero **no tienen un orden lógico o jerárquico** implícito.
+
+- *Ejemplos:* Estado civil (soltero, casado, divorciado), color de ojos (azul, café, verde), o profesión (ingeniero, médico, abogado).
+- *Operación permitida:* Solo conteo (frecuencias) e igualdad ($=$ o $\neq$).
+
+#### Ordinales
+
+A diferencia de los nominales, estas categorías sí tienen un **orden, secuencia o jerarquía con sentido**, aunque la distancia entre un nivel no se puede medir.
+
+- *Ejemplos:* Nivel de satisfacción (malo, regular, bueno, excelente), nivel socioeconómico (bajo, medio, alto), o rango militar (soldado, sargento, teniente, general) .
+- *Operación permitida:* Además del conteo, relaciones de orden ($>$ o $<$).
+
+### Datos Cuantitativos (o Numéricos)
+
+Son aquellos que representan cantidades y **se expresan mediante números**. Con ellos se pueden realizar operaciones aritméticas. Estos se subdividen en: **discretos** y **continuos**.
+
+#### Discretos
+
+Son el resultado de un **conteo**. Toman valores numéricos aislados (generalmente números enteros) y no admiten valores intermedios entre dos puntos consecutivos.
+
+- *Ejemplos:* Número de hijos en una familia ($0, 1, 2, 3$), cantidad de coches en un estacionamiento, o número de asignaturas aprobadas.
+
+#### Continuos
+
+Son el resultado de una **medición**. Pueden tomar cualquier valor real dentro de un intervalo finito o infinito, lo que significa que admiten decimales y siempre existe un valor posible entre dos puntos.
+
+- *Ejemplos:* Estatura de una persona ($1.75$ m), temperatura ambiental ($23.4$ °C), o el tiempo que tarda un algoritmo en ejecutarse (15 s).
+- *Nota:* Su precisión depende del instrumento de medición utilizado.
+
+### Otra perspectiva: Las Escalas de Medición (Stevens)
+
+En un nivel más formal, los datos cuantitativos también se suelen clasificar según sus propiedades numéricas en:
+
+- **Escala de Intervalo:** El cero es arbitrario (no significa ausencia de la variable). *Ejemplo: La temperatura en grados Celsius (0 °C no significa que no haya temperatura).*
+- **Escala de Razón:** El cero es absoluto (indica ausencia total de la variable). *Ejemplo: El peso o la distancia (0 kg significa ausencia de masa).*
+
+## Organización de los datos
+
+Para poder trabajar con con un conjunto de datos en un lenguaje de programación avanzado, lo más conveniente es organizar la información en una **hoja de cálculo** con una estructura simple de **renglones** y **columnas**.
+
+| id        | peso | altura | sexo |
+|-----------|------|--------|------|
+| subject01 | 55.3 | 1.56   | M    |
+| subject02 | 59.2 | 1.61   | M    |
+| subject03 | 82.4 | 1.70   | H    |
+| subject04 | 62.7 | 1.59   | M    |
+
+Las columnas representaran las variables que se están midiendo: peso, altura, sexo, etc. Los renglones representarán a una **unidad experimental**, es decir, el sujeto, animal u objeto sobre el que se realizan las mediciones.
+
+Esta hoja de cálculo no debe contener ningún tipo de información extra como descripciones de las variables, de los sujetos o del estudio, todo esto deberá estar en un archivo separado.
+
+La hoja de cálculo deberá guardarse en formato **csv** (comma-separated values), el cual tendrá extensión **.csv** . **Nota:** Al guardar como **csv** un archivo que originalmente estaba en formato **xlsx**, aparecerá una advertencia que indique que se va a perder información. Esto se refiere a que se perderán detalles de la hoja de cálculo como los colores, tipos de letra y otros **decoradores**, pero no se perderán los datos.
+
+## Pasos del análisis descriptivo
+
+Cuando tenemos que hacer análisis descriptivo de un conjunto de datos, las tareas que debemos realizar son:
+
+- entender y documentar el proceso de obtención de los datos;
+- depurar la base de datos (datos faltantes, corrección de errores);
+- detectar posibles datos atípicos;
+- calcular estadísticas de resumen (media, mediana, moda, frecuencia, etc.);
+- crear gráficas (histogramas, boxplot, heatmaps, etc.)
+
+## Análisis de datos cuantitativos (numéricos)
+
+Cuando se tienen datos cuantitativos se pueden calcular medidas numéricas que resumen los datos. Aquí se detallan las más utilizadas, divididas en medidas de **centralidad** y **dispersión**.
+
+### Medidas de centralidad (o tendencia central)
+
+Buscan identificar el punto de equilibrio o el valor "típico" alrededor del cual se concentran los datos cuantitativos.
+
+#### Media Aritmética ($\bar{x}$ o $\mu$)
+
+Esta medida se conoce como **promedio aritmético**, **media aritmética** o **media muestral**, y se calcula sumando todos los valores y dividiendo entre el número total de observaciones ($n$).
+
+$$\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i \quad.$$
+
+**Nota:** El promedio es muy sensible a los valores atípicos (*outliers*). Una sola observación extremadamente alta o baja desplazará la media, haciendo que deje de ser representativa del grueso de los datos.
+
+#### Mediana ($\tilde{x}$)
+
+Es el valor que ocupa la posición central cuando todos los datos continuos están ordenados de menor a mayor. Divide la muestra exactamente en dos partes iguales (50% mas pequeño, 50% mas grande).
+
+**Nota:** La mediana es una medida **robusta**, lo que significa que no se ve afectada por valores extremos. Si tienes tiempos de reacción donde la mayoría ronda los 2 s pero un sujeto se distrae y tarda 50 s, la mediana permanecerá casi inalterada.
+
+#### Moda
+
+Es el valor que más se repite en los datos. La moda se usa más con datos discretos y su interpretación es más natural. En variables estrictamente continuas, la probabilidad de que dos valores sean exactamente idénticos con todos sus decimales es teóricamente cero. Por ello, en datos continuos la moda no se busca como un valor único repetido, sino que se identifica el **intervalo modal** (el rango o "bin" con mayor densidad de datos en un histograma) o el pico de la curva de densidad.
+
+### Medidas de dispersión o variabilidad
+
+Indican qué tan alejados están los datos continuos respecto al centro. Dos distribuciones pueden tener exactamente la misma media pero comportamientos radicalmente opuestos debido a su dispersión.
+
+#### Máximo y mínimo
+
+Son los valores extremos de la muestra, el más pequeño (mínimo) se denota por $x_{x_{\text{mín}}}$ y el más grande (máximo) se denota por $x_{\text{máx}}$.
+
+#### Rango (o Amplitud)
+
+Es la diferencia entre el valor máximo y el valor mínimo del conjunto de datos.
+
+$$\text{Rango} = x_{\text{máx}} - x_{\text{mín}}$$
+
+**Nota:** Solo utiliza dos valores del dataset, ignorando todo lo que ocurre en medio, y es extremadamente sensible a los valores atípicos.
+
+#### Rango intercuartil ($IQR$)
+
+Para poder entender el rango intercuarti, es necesrio entender primero el que los **cuartiles** son medidas estadísticas de posición (o cuantiles) que tienen como función dividir un conjunto de datos ordenados en **cuatro partes iguales**, donde cada parte representa el 25% de la muestra o población total.
+
+Al igual que la mediana divide los datos en dos mitades (50/50), los cuartiles extienden esta idea para segmentar la distribución en cuatro tramos, utilizando tres puntos de corte específicos a los que llamamos **Q1, Q2 y Q3**.
+
+Para poder calcularlos o interpretarlos, el requisito indispensable es que los datos sean **cuantitativos** (discretos o continuos) y estén **ordenados de menor a mayor**.
+
+El **primer cuartil** ($Q_1$) o **percentil 25** es el valor por debajo del cual se encuentra el **25%** de los datos de la distribución, mientras que el 75% restante presenta valores mayores.
+
+El **segundo cuartil** ($Q_2$) o **percentil 50** (la mediana) es el valor que divide la distribución exactamente a la mitad. El **50%** de los datos son menores o iguales a él, y el otro 50% son mayores o iguales.
+
+El **tercer cuartil** ($Q_3$) o **percentil 75** es el valor por debajo del cual se encuentra el **75%** de los datos, mientras que el 25% restante corresponde a los valores más altos de la muestra.
+
+Una de las mayores utilidades de los cuartiles es el cálculo del **rango intercuartil** ($IQR = Q_3 - Q_1$). Esta medida de dispersión representa la distancia numérica que ocupa el **50% central de los datos**. A diferencia del rango total (Máximo - Mínimo), el IQR no se ve afectado por valores extremadamente altos o bajos, por lo que es una medida muy robusta para evaluar la variabilidad en datos asimétricos.
+
+- *Ejemplo:* Suponga que en una cierta población, los salarios se distribuyen de la siguiente forma:
+
+  - $Q_1 = \$9,400$ pesos
+  - $Q_2 = \$17,000$ pesos
+  - $Q_3 = \$31,500$ pesos
+
+  Esto implica que:
+
+  1.  El 25% de las personas ganan \$9,400 pesos o menos.
+  2.  La mitad de las personas gana menos de \$17,000 pesos y la otra mitad gana más de esa cantidad.
+  3.  El 25% de las personas con los ingresos más altos ganan de \$31,500 pesos en adelante.
+  4.  El 50% de la población tiene salarios que oscilan entre los \$9,400 y los \$60,000 pesos (IQR = \$40,000).
+
+#### Varianza ($s^2$ o $\sigma^2$)
+
+Mide el promedio de las distancias al cuadrado de cada dato respecto a la media.
+
+$$s^2 = \frac{\sum_{i=1}^{n} (x_i - \bar{x})^2}{n - 1} .$$
+
+- **Nota:** Elevar las diferencias al cuadrado evita que las desviaciones positivas y negativas se cancelen entre sí. Sin embargo, deja las unidades de medida al cuadrado (por ejemplo, si mides estatura en metros, la varianza queda en $\text{m}^2$), lo que dificulta su interpretación directa. Su principal utilidad, por ahora, es que nos permite comparar la variabilidad de dos grupos.
+
+#### Desviación Estándar ($s$ ó $\sigma$)
+
+Es la raíz cuadrada positiva de la varianza.
+
+$$s = \sqrt{s^2}.$$
+
+- **Importancia:** Devuelve la medida de dispersión a las **unidades originales de los datos** (metros, segundos, gramos), haciéndola intuitiva. En distribuciones continuas que siguen una forma acampanada (normal), aproximadamente el 68% de los datos caen dentro de una desviación estándar respecto a la media.
+
+### Visualización
+
+Para analizar variables cuantitativas a nivel descriptivo, ya sean discretas o continuas, las visualizaciones son indispensables. Su objetivo no es solo "ver los datos", sino identificar rápidamente tres propiedades clave: **la tendencia central** (dónde se acumulan), **la dispersión** (qué tan alejados del centro están) y **la forma de la distribución** (si hay asimetría y/o valores atípicos).
+
+#### Histogramas
+
+Es la visualización por excelencia para variables **continuas**. Divide el rango de los datos en intervalos contiguos (llamados *bins* o contenedores) y dibuja una barra sobre cada intervalo cuya altura representa la frecuencia (o densidad) de los datos en ese rango.
+
+* **¿Qué permite ver?** La forma de la distribución (si es una campana simétrica, bimodal o sesgada hacia un lado) y dónde se encuentra el pico (la moda de la densidad).
+
+<!-- * **En R:** `geom_histogram()`. Es un excelente ejercicio didáctico cambiar el argumento `binwidth` o `bins` para mostrar cómo una mala elección del ancho de banda puede ocultar o falsear la estructura de los datos. -->
+
+```{r, message = FALSE, warning=FALSE}
+library(palmerpenguins)
+library(plotly)
+plot_ly(type = "histogram", x = penguins$body_mass_g) %>%
+  layout(xaxis = list(title = "Peso (gramos)"),
+         yaxis = list(title = "Frecuencia"),
+         title = "Peso de pingüinos del archipielago Palmer")
+```
+
+
+### Diagrama de densidad (Kernel Density Plot)
+
+Es una versión suavizada del histograma. En lugar de usar barras rígidas, utiliza una función matemática para estimar una curva suave que representa la distribución de probabilidad de los datos continuos.
+
+* **¿Qué permite ver?** Facilita la identificación de la simetría y las colas de la distribución de una manera más limpia visualmente que el histograma, especialmente al superponer varios grupos.
+
+<!-- * **En R:** `geom_density()`. -->
+
+```{r, message = FALSE, warning=FALSE}
+p <- ggplot(penguins, aes(x = flipper_length_mm)) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Longitud de aletas de pingüinos", x = "Longitud (mm)", y = "Densidad")
+
+# 2. Convert it into an interactive Plotly object
+fig <- ggplotly(p)
+
+# Display the plot
+fig
+```
+
+#### Diagrama de barras (para datos discretos)
+
+Cuando la variable cuantitativa es **discreta** y tiene pocos valores posibles (como el número de hijos o número de quejas), no se debe usar un histograma continuo. Se utiliza un diagrama de barras donde cada número entero tiene su propia barra aislada.
+
+* **¿Qué permite ver?** La frecuencia exacta de cada conteo sin agrupar valores de manera artificial.
+
+<!-- * **En R:** `geom_bar()`. -->
+
+```{r, echo = TRUE}
+tab.year = table(penguins$year)
+plot_ly(type = "bar", x = names(tab.year), y = tab.year) %>%
+layout(yaxis = list(title = "Frecuencia"),
+         title = "Pingüinos registrados por año")
+```
+
+
+#### Diagrama de caja (*Boxplot*)
+
+Una herramienta basada directamente en los cuartiles. Consiste en una caja central que abarca desde el primer cuartil ($Q_1$) hasta el tercero ($Q_3$), con una línea interna que marca la mediana ($Q_2$). Los "bigotes" se extienden hasta los valores extremos no atípicos.
+
+* **¿Qué permite ver?** La dispersión (a través del ancho de la caja o $IQR$) y, de forma inmediata, la presencia de **valores atípicos (*outliers*)**, que se grafican como puntos aislados más allá de los bigotes.
+
+<!-- * **En R:** `geom_boxplot()`. -->
+
+<!-- ## 2. Para Comparar una Variable Cuantitativa entre Grupos -->
+
+<!-- #### Boxplots Comparativos -->
+
+<!-- Colocar varios diagramas de caja uno al lado del otro en el mismo eje (por ejemplo, el salario en el eje Y, y la carrera o el género en el eje X). -->
+
+<!-- * **Qué permite ver:** Es la forma más eficiente de comparar medianas y variabilidad entre distintas categorías de un solo vistazo. -->
+<!-- * **En R:** `ggplot(data, aes(x = categoria, y = continua)) + geom_boxplot()`. -->
+
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+p <- ggplot(penguins, aes(y = body_mass_g, x = species, color = species)) +
+  geom_boxplot(alpha = 0.5) +
+  labs(title = "Peso de pingüinos por especie", x = "Especie", y = "Peso (g)", color = "Especie")
+
+# 2. Convert it into an interactive Plotly object
+fig <- ggplotly(p)
+
+# Display the plot
+fig
+```
+
+
+
+#### Gráficos de violín
+
+Es una combinación híbrida entre un *boxplot* y un diagrama de densidad.
+
+* **Qué permite ver:** Además de mostrar los puntos de corte, el grosor del "violín" indica en qué regiones hay mayor densidad de datos. Esto es sumamente útil para detectar si una distribución es bimodal (tiene dos picos), algo que un *boxplot* tradicional a veces puede ocultar.
+
+<!-- * **En R:** `geom_violin()`. -->
+
+```{r, echo = TRUE, warning = FALSE, message = FALSE}
+p <- ggplot(penguins, aes(y = body_mass_g, x = species, color = species)) +
+  geom_violin(alpha = 0.5) +
+  labs(title = "Peso de pingüinos por especie", x = "Especie", y = "Peso (g)", color = "Especie")
+
+# 2. Convert it into an interactive Plotly object
+fig <- ggplotly(p)
+
+# Display the plot
+fig
+```
+
+
+#### Gráficas de dispersión (*Scatterplot*)
+
+Representa pares de observaciones como un punto en un plano cartesiano (eje $x$ y eje $y$).
+
+* **¿Qué permite ver?** Es la herramienta fundamental para evaluar la relación o **asociación** entre dos variables continuas. Permite identificar de inmediato si la relación es lineal (positiva o negativa), no lineal, o si no existe correlación alguna.
+
+<!-- * **En R:** `geom_point()`. Suele acompañarse de `geom_smooth(method = "lm")` para trazar la línea de tendencia descriptiva de una regresión lineal. -->
+
+```{r, message = FALSE, warning = FALSE}
+plot_ly(type = "scatter", mode = "markers", x = penguins$bill_length_mm,
+        y = penguins$flipper_length_mm,
+        color = penguins$species) %>%
+layout(xaxis = list(title = "Longitud de pico (mm)"),
+       yaxis = list(title = "Longitud de aleta (mm)"),
+         title = "Longitud de pico vs longitud de aleta en pingüinos")
+```
+
+## Análisis de datos cualitativos (categóricos)
+
+Al trabajar con **datos categóricos o cualitativos** (ya sean nominales u ordinales), las herramientas matemáticas cambian por completo. Como los datos representan atributos o etiquetas y no cantidades, no tiene sentido calcular operaciones aritméticas tradicionales (no puedes promediar el estado civil ni calcular la desviación estándar del color de ojos).
+
+La estadística descriptiva para datos categóricos se centra en **contar**, **comparar proporciones** y **medir la frecuencia** de cada categoría.
+
+
+### Resumenes numércios (tablas de frecuencia)
+
+La forma fundamental de resumir datos categóricos es mediante el conteo estructurado. Dependiendo de cuántas variables analicemos al mismo tiempo, creamos diferentes tipos de tablas.
+
+#### Frecuencias para una sola variable
+
+Para una variable (por ejemplo, el tipo de carrera de los estudiantes), calculamos tres tipos de valores:
+
+* **Frecuencia Absoluta ($n_i$):** El número total de veces que aparece una categoría en la muestra.
+* **Frecuencia Relativa ($f_i$):** La proporción que representa esa categoría respecto al total ($n_i / N$). Es sumamente útil para comparar muestras de diferentes tamaños.
+* **Frecuencia Porcentual ($p_i$):** La frecuencia relativa multiplicada por 100.
+* **Frecuencia Acumulada:** **(¡Solo para datos ordinales!)** Si las categorías tienen un orden lógico (como el nivel de satisfacción: Malo, Regular, Bueno), se pueden ir sumando las frecuencias para saber, por ejemplo, qué porcentaje de personas calificó el servicio como "Regular o menor". En variables nominales, la acumulada no tiene ningún sentido matemático.
+
+#### Tablas de Contingencia o Cruzadas (Bivariado)
+
+Cuando queremos analizar la **relación entre dos variables categóricas** (por ejemplo, si el tratamiento médico funcionó o no según el sexo del paciente), cruzamos las variables en una matriz de filas y columnas.
+
+* Permite calcular frecuencias conjuntas (cuántas personas cumplen ambas condiciones) y frecuencias marginales (los totales de cada fila y columna).
+
+
+#### Medidas de Tendencia Central
+
+En datos categóricos, las opciones de centralidad son muy limitadas.
+
+* **La Moda:** Es la **única** medida de tendencia central que se puede utilizar en todos los datos categóricos (tanto nominales como ordinales). Es simplemente la categoría que registra la mayor frecuencia absoluta.
+
+* **Nota:** La media aritmética está completamente prohibida aquí. Aunque en R codifiques "Hombre = 1" y "Mujer = 2", calcular el promedio y obtener `1.5` no tiene ninguna interpretación real.
+
+
+
+### Visualizaciones para Datos Categóricos
+
+Para presentar estos datos de forma gráfica en R, las opciones principales son diagramas de barras o de tipo pastel.
+
+#### Diagrama de Barras (*Bar Chart*)
+
+Es la gráfica estándar e ideal. En el eje $x$ se colocan las categorías independientes y en el eje $y$ la frecuencia (absoluta o relativa).
+
+* **Ventaja:** Permite comparar visualmente las longitudes de las barras con mucha precisión.
+* **¡Importante!** En una gráfica de barras, la escala del eje de frecuencias siempre debe comenzar en 0 par evitar interpretaciones incorrectas.
+
+<!-- * **En R:** `geom_bar()` si dejas que R cuente las filas, o `geom_col()` si ya tienes la tabla de frecuencias precalculada. -->
+
+```{r, echo = TRUE, message = FALSE, warning = FALSE}
+tab.species = table(penguins$species)
+plot_ly(type = "bar", x = names(tab.species), y = tab.species) %>%
+  layout(yaxis = list(title = "Número de pingüinos en la muestra"),
+         title = "Distribución de pingüinos por especie")
+```
+
+
+
+
+#### Diagrama de Barras Agrupadas o Apiladas
+
+Se utiliza para las tablas de contingencia (dos variables categóricas).
+
+* **Barras Apiladas (*Stacked*):** Una sola barra por categoría que se divide en colores según la segunda variable. Si se escala al 100%, es excelente para comparar proporciones relativas.
+* **Barras Lado a Lado (*Dodge*):** Coloca las barras de la segunda variable compitiendo una junto a la otra.
+
+
+```{r, echo = TRUE, message = FALSE, warning = FALSE}
+tab.species_island = table(penguins$species, penguins$island)
+plot_ly(type = "bar", x = colnames(tab.species_island), y = tab.species_island[1, ], name = "Adelie") %>%
+  add_bars(y = tab.species_island[2, ], name = "Chistrap") %>%
+  add_bars(y = tab.species_island[3, ], name = "Gentoo") %>%
+  layout(yaxis = list(title = "Número de pingüinos"),
+         title = "Distribución de pingüinos por especie e isla",
+         barmode = 'group')
+
+tab.species_island = table(penguins$species, penguins$island)
+plot_ly(type = "bar", x = colnames(tab.species_island), y = tab.species_island[1, ], name = "Adelie") %>%
+  add_bars(y = tab.species_island[2, ], name = "Chistrap") %>%
+  add_bars(y = tab.species_island[3, ], name = "Gentoo") %>%
+  layout(yaxis = list(title = "Número de pingüinos"),
+         title = "Distribución de pingüinos por especie e isla",
+         barmode = 'stack')
+```
+
+
+#### Gráfico de Pastel (*Pie Chart*)
+
+Representa las frecuencias relativas como sectores de un círculo.
+
+* **Nota:** En la comunidad de análisis de datos y el gráfico de pastel suele desaconsejarse si hay más de 3 categorías. El ojo humano tiene dificultades midiendo ángulos y áreas.
+
+```{r, echo = TRUE, message = FALSE, warning = FALSE}
+tab.species = table(penguins$species)
+plot_ly(type = "pie", labels = names(tab.species), values = tab.species) %>%
+  layout(#yaxis = list(title = "Número de pingüinos en la muestra"),
+         title = "Distribución de pingüinos por especie")
+```
+
+
+<!-- ## Ejemplo de Código en R para tu Clase -->
+
+<!-- Para mostrar cómo interactuar con variables categóricas usando el ecosistema moderno de R: -->
+
+<!-- ```{r} -->
+<!-- library(dplyr) -->
+
+<!-- # Usando el dataset integrado 'starwars' y filtrando para este ejemplo -->
+<!-- datos_complejos <- starwars %>%  -->
+<!--   filter(eye_color %in% c("blue", "brown", "yellow", "black")) -->
+
+<!-- # 1. Resumen numérico (Tabla de frecuencias de una variable nominal) -->
+<!-- tabla_ojos <- datos_complejos %>%  -->
+<!--   count(eye_color, name = "Frecuencia_Absoluta") %>%  -->
+<!--   mutate( -->
+<!--     Proporcion = Frecuencia_Absoluta / sum(Frecuencia_Absoluta), -->
+<!--     Porcentaje = Proporcion * 100 -->
+<!--   ) -->
+
+<!-- print(tabla_ojos) -->
+
+<!-- # 2. Encontrar la Moda de forma programática -->
+<!-- moda_ojos <- tabla_ojos %>% filter(Frecuencia_Absoluta == max(Frecuencia_Absoluta)) -->
+<!-- print(paste("La moda es el color de ojos:", moda_ojos$eye_color)) -->
+
+<!-- # 3. Visualización con ggplot2 -->
+<!-- ggplot(datos_complejos, aes(x = eye_color, fill = eye_color)) + -->
+<!--   geom_bar(color = "black", alpha = 0.8) + -->
+<!--   labs( -->
+<!--     title = "Distribución del Color de Ojos en Star Wars", -->
+<!--     x = "Color de Ojos (Variable Categórica)", -->
+<!--     y = "Conteo (Frecuencia Absoluta)" -->
+<!--   ) + -->
+<!--   theme_minimal() -->
+
+<!-- ``` -->
+
+
+
+
+## Ejemplos
+
+### Ejemplo 1: Creando un archivo csv
+
+Crea una hoja de cálculo desde cero recopilando la siguiente información con tus compañeros del curso:
+
+- Nombre
+- Edad
+- Sexo
+- Área de conocimiento
+- Estudiante (si o no)
+- Número de redes sociales
+- Tiempo en redes sociales por
+
+Guarda el archivo en formato **csv** con el nombre **my_data.csv**
+
+#### Ejemplo 2: 
+
+Suponer que tenemos un conjunto de datos que queremos procesar. Como ejemplo, tomaremos un dataset de R que se llama **iris**.
+
+```{r}
+rm(list=ls()) # limpiar memoria
+#help(iris) # Muestra información del objeto en la pestaña de ayuda
+str(iris) # descripción de los datos
+```
+
+El comando `str` permite obtener información del tipo de objeto. En el caso de un dataframe, esto permite revisar que las variables tengan el tipo de dato correcto y el tamaño del dataframe. Comenzamos calculando algunas estadísticas básicas del dataset iris.
+
+```{r}
+summary(iris)
+```
+
+Podemos calcular cada una de las estadísticas anteriores de forma manual y guardar el resultado en variables.
+
+```{r}
+x = mean(iris$Petal.Length) # promedio
+median(iris$Sepal.Width) # mediana
+max(iris$Sepal.Length) # máximo
+min(iris$Petal.Width) # mínimo
+quantile(iris$Sepal.Length, c(0.25, 0.5, 0.75)) #cuantiles  muestrales
+sd(iris$Sepal.Length) # desviación estándar
+var(iris$Sepal.Length) # varianza
+```
+
+### Ejemplo: airquality
+
+Vamos a abrir un segundo conjunto de datos llamado **airquality**.
+
+```{r}
+#help("airquality")
+str(airquality)
+```
+
+Vamos a calcular estadísticas de resumen de este dataset.
+
+```{r}
+summary(airquality)
+```
+
+Queremos identificar cuales son las observaciones donde hay datos faltantes.
+
+```{r}
+which(is.na(airquality$Ozone))
+```
+
+Ahora, hacemos una gráfica de la variable Ozono.
+
+```{r}
+plot(airquality$Ozone, type = "l", xlab = "Tiempo", ylab = "Ozono",
+     col = "blue", lwd = 3) # gráfica simple de puntos
+```
+
+Por ahora, vamos a eliminar los datos faltantes del dataset.
+
+```{r}
+D = na.omit(airquality)
+str(D)
+```
+
+### Ejemplo: mtcars
+
+Ahora vamos a trabajar con el dataset **mtcars**. Podemos hacer gráficas de dispersión para analizar las relaciones entre las variables.
+
+```{r}
+#help(mtcars)
+str(mtcars)
+summary(mtcars)
+
+pairs(mtcars) # genera graficas de dispersión por pares
+```
+
+Supongmos que nos queremos centrar en algunas variables. Podemos analizar la distribución de los datos usando grárficas de histogramas.
+
+```{r}
+par(mfrow = c(2,2))
+hist(mtcars$mpg)
+hist(mtcars$disp)
+hist(mtcars$wt)
+hist(mtcars$qsec)
+
+```
+
+Otro tipo de gráfica que es muy útil para describir la distribución de los datos es el **boxplot**.
+
+```{r}
+par(mfrow = c(2,2))
+boxplot(mtcars$mpg, ylab = "Rendimiento", col = "magenta")
+boxplot(mtcars$disp, ylab = "Desplazamiento", col = "cyan")
+boxplot(mtcars$wt, ylab = "Peso", col = "dodgerblue")
+boxplot(mtcars$qsec, ylab = "Tiempo para 1/4 de milla", col = "gold")
+```
+
+# Variables categóricas
+
+Para trabajar con variables categóricas, podemos utilizar los comandos **table** y **barplot**.
+
+```{r}
+R = read.csv("Data/Curso.csv", header = TRUE, as.is = FALSE)
+str(R)
+summary(R)
+```
+
+Queremos obtener una tabla de frecuencias de las variables, y usar estas tablas para hacer gráficas.
+
+```{r}
+tab.red = table(R$RedSocial)
+print(tab.red)
+
+barplot(tab.red, main = "Preferencia de redes sociales")
+```
+
+Ahora quisieramos contar cuantos individuos tienen dos características en particular, por ejemplo, cuantos individuos prefieren instagrama y chilaquiles.
+
+```{r}
+table(R$RedSocial, R$Comida)
+```
+
+También podemos hacer gráficas de pastel.
+
+```{r}
+pie(tab.red)
+```
+
+# Plotly
+
+Para que la exploración de los datos sea más fácil, es conveniente tener gráficas interactivas. Esto lo podemos lograr en R utilizando la libería [Plotly](https://plotly.com/r/).
+
+```{r}
+library(plotly) #carga una liberia
+
+plot_ly(type = "scatter", mode = "markers", x = iris$Petal.Length,
+        y = iris$Petal.Width, color = iris$Species) %>% layout(yaxis = list(title = "Ancho de pétalo"),
+                                         xaxis = list(title = "Largo de pétalo"))
+
+```
+
+# Filtrado de datos
+
+Si se tiene un dataframe en **R**, es posible seleccionar sólo algunos renglones o algunas columnas mediante el uso del operador índice.
+
+```{r}
+D = read.csv("Data/COVID19MEXICO.csv", header = TRUE, as.is = TRUE)
+#str(D)
+D[1:10, c("FECHA_INGRESO", "INTUBADO")] # Seleccionar columnas por nombre de variable
+M = D[c(17, 18, 19)] # Seleccionar columnas por índice de variable
+str(M)
+```
+
+También podemos acceder sólo a ciertas observaciones (renglones) del dataframe.
+
+```{r}
+D[1:5, ] # elegir los primeros cinco renglones
+D[1:7, 2:3] # elegir los primeros 7 renglones de las variables 2 y 3
+```
+
+Podemos filtrar los datos pidiendo que se cumplan ciertas condiciones a través de operadores lógicos.
+
+```{r}
+(D$SEXO == 1)[1:10] # identifica donde se cumple la condición
+M = D[D$SEXO == 1, ] # Dataset sólo con mujeres
+str(M)
+unique(M$SEXO) # regresa los valores distintos en la variable
+```
+
+Podemos extraer cualquier subconjunto de la base de datos. El filtrado se puede hacer sin importar si la variable es numérica o tipo caracter.
+
+```{r}
+unique(D$PAIS_NACIONALIDAD)
+B = D[D$PAIS_NACIONALIDAD == "Bolivia", ] # elegir datos de personas originaias de bolivia
+str(B)
+```
+
+Podemos filtrar los datos pidiendo que se cumplan varias condiciones al mismo tiempo. Para esto, necesitamos usar los operadores lógicos AND (&) y OR (\|).
+
+```{r}
+index = D$SEXO == 1 & D$PAIS_NACIONALIDAD == "Bolivia"
+W = D[index, ]
+str(W)
+```

@@ -1,0 +1,582 @@
+# Análisis de varianza (ANOVA)
+
+
+```{r, echo = FALSE, warning=FALSE, message=FALSE}
+library(car)
+library(agricolae)
+```
+
+El propósito principal del ANOVA es comparar varias medias de manera simultánea para verificar si al menos una de ellas es significativamente diferente de las demás. A diferencia de las pruebas t de Student, que comparan sólo dos grupos, ANOVA es útil cuando se tienen tres o más grupos.
+
+**Ejemplo 1**. Supongamos que queremos investigar si tres métodos de enseñanza diferentes ($A$, $B$ y $C$) tienen un efecto distinto en el rendimiento académico de los estudiantes. El rendimiento académico se mide en una escala numérica de 0 a 100, y se recopilan datos de 15 estudiantes que fueron asignados aleatoriamente a uno de los tres métodos de enseñanza. La siguiente tabla muestra los resultados obtenidos.
+
+```{r}
+rm(list =ls())
+set.seed(1984)
+mu = 75
+sigma = 10
+r1 = rnorm(5, mu, sigma)
+r2 = rnorm(5, mu, sigma)
+r3 = rnorm(5, mu, sigma)
+Raw = data.frame("Metodo A" = r1, "Metodo B" = r2, "Metodo C" = r3)
+print(round(Raw, 0))
+```
+
+Se desea probar la hipótesis nula que indica que el rendimiento medio de cada tipo de enseñanza es el mismo, contra la hipótesis alternativa que establece que al menos uno el de los métodos tiene un rendimiento medio distinto, es decir:
+$$ H_0:\mu_A = \mu_B = \mu_C \quad \text{vs} \quad H_1: \text{existe al menos un }\mu_i \text{ distinto}
+$$
+
+```{r}
+boxplot(r1, r2, r3, names = c("Método A", "Método B", "Método C"), ylab = "Rendimiento", main = "Rendimiento de tres métodos de enseñanza", col = "dodgerblue")
+```
+
+## Hipótesis de trabajo
+
+El análisis de varianza se basa en las siguientes hipótesis:
+
+-   **Hipótesis nula (**$H_0$): Las medias de todos los grupos son iguales.
+-   **Hipótesis alternativa (**$H_1$): Al menos una de las medias es diferente.
+
+## Procedimiento
+
+El procedimiento básico para realizar un ANOVA incluye los siguientes pasos:
+
+1.  **Cálculo de la media global** (media de todas las observaciones).
+
+2.  **Cálculo de la variabilidad entre los grupos**: Esto mide la variación debido a las diferencias entre las medias de los grupos.
+
+3.  **Cálculo de la variabilidad dentro de los grupos**: Mide la variación dentro de cada grupo, es decir, la variabilidad de las observaciones individuales con respecto a la media del grupo.
+
+4.  **Cálculo de la estadística** $F$: Esta estadística se calcula como la razón entre la variabilidad entre los grupos y la variabilidad dentro de los grupos. La fórmula es:
+
+    $$ F = \frac{\text{Varianza entre grupos}}{\text{Varianza dentro de los grupos}}
+    $$
+
+5.  **Evaluación de la significancia estadística**: Se compara el valor de $F$ con un valor crítico de una tabla de distribución $F$, teniendo en cuenta los grados de libertad y el nivel de significancia ($\alpha$). Si el valor de $F$ es mayor que el valor crítico, se rechaza la hipótesis nula.
+
+6.  **Cálculo del valor** $p$: En muchos casos, se utiliza el valor $p$ para evaluar la significancia. Si el valor $p$ es menor que el nivel de significancia $\alpha$), se rechaza la hipótesis nula.
+
+7.  **Interpretación de los resultados**: Una vez realizada la prueba de ANOVA, si se rechaza la hipótesis nula, es necesario realizar una **prueba post-hoc** (como el test de Tukey) para identificar qué pares de grupos son significativamente diferentes entre sí.
+
+
+## Modelo General ANOVA
+
+El modelo general para el ANOVA se puede expresar como:
+
+$$
+Y_{ij} = \mu + \tau_i + \epsilon_{ij},
+$$
+
+donde:
+
+-   $Y_{ij}$ es el valor observado para el $j$-ésimo elemento del $i$-ésimo grupo.
+-   $\mu$ es la media global.
+-   $\tau_i$ es el efecto del $i$-ésimo grupo (tratamiento).
+-   $\epsilon_{ij}$ es el error aleatorio (residuo), que sigue una distribución Normal con media cero y varianza $\sigma^2$.
+
+Las hipótesis a probar son:
+
+-   Hipótesis nula ($H_0$): Las medias de los grupos son iguales, es decir, $\mu_1 = \mu_2 = \dots = \mu_k$,
+-   Hipótesis alternativa ($H_1$): Al menos una de las medias de los grupos es diferente,
+
+donde $\mu_i = \mu + \tau_i$.
+
+## Suma de Cuadrados (Sum of Squares)
+
+### Suma de Cuadrados Total ($SS_{\text{Total}}$):
+
+$$
+SS_{\text{Total}} = \sum_{i=1}^{n} \sum_{j=1}^{m_i} (Y_{ij} - \bar{Y}_{\cdot\cdot})^2
+$$
+
+Donde $\bar{Y}_{\cdot\cdot}$ es la media global de todas las observaciones.
+
+### Suma de Cuadrados entre Grupos ($SS_{\text{Entre}}$):
+
+$$
+SS_{\text{Entre}} = \sum_{i=1}^{k} m_i (\bar{Y}_{i\cdot} - \bar{Y}_{\cdot\cdot})^2
+$$
+
+Donde: - $k$ es el número de grupos (tratamientos). - $m_i$ es el número de observaciones en el $i$-ésimo grupo. - $\bar{Y}_{i\cdot}$ es la media del $i$-ésimo grupo.
+
+### Suma de Cuadrados dentro de los Grupos ($SS_{\text{Dentro}}$):
+
+$$
+SS_{\text{Dentro}} = \sum_{i=1}^{k} \sum_{j=1}^{m_i} (Y_{ij} - \bar{Y}_{i\cdot})^2
+$$
+
+### Grados de Libertad (Degrees of Freedom)
+
+-   Grados de libertad total: $df_{\text{Total}} = N - 1$, donde $N$ es el número total de observaciones.
+-   Grados de libertad entre grupos: $df_{\text{Entre}} = k - 1$.
+-   Grados de libertad dentro de los grupos: $df_{\text{Dentro}} = N - k$.
+
+## Media Cuadrática (Mean Square)
+
+### Media Cuadrática Entre Grupos ($MS_{\text{Entre}}$):
+
+$$
+MS_{\text{Entre}} = \frac{SS_{\text{Entre}}}{df_{\text{Entre}}}
+$$
+
+### Media Cuadrática Dentro de los Grupos ($MS_{\text{Dentro}}$):
+
+$$
+MS_{\text{Dentro}} = \frac{SS_{\text{Dentro}}}{df_{\text{Dentro}}}
+$$
+
+## Estadístico de Prueba F
+
+El estadístico de prueba $F$ se calcula como la razón de las medias cuadráticas:
+
+$$
+F = \frac{MS_{\text{Entre}}}{MS_{\text{Dentro}}}
+$$
+
+Si el valor calculado de $F$ es mayor que el valor crítico de la distribución $F$ en un nivel de significancia determinado, se rechaza la hipótesis nula de que todos los grupos tienen medias iguales.
+
+**Ejemplo (continuación)**. 
+
+-   H₀: Las medias de los rendimientos académicos de los tres métodos de enseñanza son iguales.
+
+-   H₁: Al menos un método de enseñanza tiene una media de rendimiento diferente.
+
+Para realizar el análisis de varianza usamos el comando `aov`.
+
+```{r}
+X = data.frame(Metodo = as.factor(rep(c("Metodo1", "Metodo2", "Metodo3"), c(5,5,5))), Rendimiento = c(Raw$Metodo.A, Raw$Metodo.B, Raw$Metodo.C))
+print(X)
+ANOVA = aov(Rendimiento ~ Metodo, data = X)
+summary(ANOVA)
+```
+
+El p-valor de la prueba es grande por lo que no podemos rechazar $H_0$, es decir, no hay evidencia para pensar que los resultados de los métodos de enseñanza sean distintos.
+
+
+## Supuestos del ANOVA
+
+Para que los resultados de ANOVA sean válidos, deben cumplirse ciertos supuestos:
+
+1.  **Independencia de las observaciones:** Las observaciones deben ser independientes entre sí.
+2.  **Normalidad:** Los datos dentro de cada grupo deben seguir una distribución normal.
+3.  **Homogeneidad de varianzas (homocedasticidad):** Las varianzas dentro de cada grupo deben ser aproximadamente iguales.
+
+## Ventajas del ANOVA
+
+-   Permite comparar más de dos grupos al mismo tiempo.
+-   Es más eficiente que realizar múltiples pruebas t, lo que reduce el riesgo de cometer un error tipo I.
+
+## Desventajas del ANOVA
+
+-   Sensible a los supuestos de normalidad y homogeneidad de varianzas.
+-   No indica qué grupos son significativamente diferentes entre sí, solo si hay diferencias en general.
+
+
+**Ejemplo: crecimiento de maíz.** Para hacer crecer maíz, se aplican 5 tratamientos diferentes a las parcelas y se mide el peso (en onzas) de mazorcas elegidas al azar para ver si alguno de los tratamientos hace alguna diferencia. Los tratamientos son:
+
+```         
+1.  Nematodes
+2.  Avispas
+3.  Nematods y avispas
+4.  Bacterias
+5.  Control
+```
+
+La siguiente gráfica un boxplot de los datos de cada uno de los tratamientos.
+
+```{r}
+rm(list=ls())
+Data = read.csv("Data/Nematodos.csv", header=TRUE)
+str(Data)
+
+# Es importante convertir la variable que indica los grupos a una variable tipo factor
+Data$Tratamiento = as.factor(Data$Tratamiento)
+
+# Boxplot de cada tratamiento 
+plot(Data$Tratamiento, Data$Peso, ylab = "Peso de las mazorcas (onzas)", xlab = "", col = "lightgreen")
+```
+
+
+Abajo se muestra la tabla donde se resume la prueba F del análisis de varianza para probar
+
+$$ H_0 : \mu_1 = \mu_2 = \mu_3 = \mu_4 = \mu_5.
+$$
+
+```{r}
+ANOVA = aov(Peso ~ Tratamiento, data=Data)
+summary(ANOVA)
+```
+
+Dado que el $p$-valor de análisis de varianza es muy grande, no tenemos evidecia para rechazar la hipótesis nula, lo cual implica que no podemos decir si alguno de los tratamientos realmente hace una diferencia en los pesos de las mazorcas de maíz.
+
+## Validación de supuestos
+
+Para validar el ANOVA, es necesario determinar si los datos son normales y si las variaznas de cada grupo son iguales. Para esto podemos hacer un análisis gráfico de los residuales del modelo.
+
+```{r}
+# Graficas de diagnóstico del modelo ANOVA
+plot(ANOVA)
+```
+
+Las gráficas de residuales muestran que es razonable pensar que los datos son normales y que las desviaciones estándar de cada grupo son similares. Si esto no es claro, es posible hacer pruebas de hipótesis para juzgar estos supuestos de forma más rigurosa.
+
+### Prueba de normalidad
+
+La **prueba de normalidad de Shapiro-Wilks** se usa para probar la hipótesis nula que establece que los datos siguen una distribución Normal. Podemos aplicar la prueba a cada uno de los grupos definidos por la variable Tratamiento.
+
+```{r}
+by(Data$Peso,  Data$Tratamiento, shapiro.test)
+```
+
+Como se puede ver, la mayoría de los p-valores son grandes por lo que no se puede rechazar la hipótesis de normalidad. El único grupo donde existe la posibilidad de que los datos no sean normales es el grupo de control, pero la evidencia no es cotundente, sin mencionar que tenemos pocos datos.
+
+### Pruebas de homogeneidad de varianzas
+
+La prueba de Bartlett es una prueba de homogeneidad de varianzas. La hipótesis nula establece que las variaznas de todos los grupos son las mismas. Es sensible a la falta de normalidad en los datos.
+
+```{r}
+bartlett.test(Data$Peso, Data$Tratamiento)
+```
+
+El $p$-valor es grande por lo que no hay evidencia en contra de que los grupos tengan la misma varianza.
+
+La prueba de Levene hace lo mismo que la prueba de Bartlett pero es menos sensible a la falta de normalidad.
+
+```{r}
+leveneTest(Data$Peso, Data$Tratamiento)
+```
+
+La prueba de Fligner-Killeen es una prueba no parámetrica para la homogeneidad de varianzas.
+
+```{r}
+fligner.test(Data$Peso, Data$Tratamiento)
+```
+
+En este ejemplo, todas las pruebas nos dan la misma conclusión, no hay evidencia en contra de la homogeneidad de varianzas.
+
+## Pruebas múltiples
+
+Cuando se rechaza la hipótesis nula en un análisis de varianza, es necesrio saber que tratamientos son los que hacen diferencia en la variable respusta. Para esto hacemos pruebas de comparación de medias para cada par de tratamientos, o bien, construimos intervalos de confianza para la diferencia de medias de cada par de tratamientos. Esto se debe hacer con un nivel de significancia **corregido** de forma que se obtenga el nivel de significancia global requerido. Los métodos más comunes para realizar esto son: corrección de Bonferroni, prueba LSD de Fisher (Least Significant Difference), y la prueba HSD de Tukey (Honest Significant Difference). Los resultados de estos análisis se muestran abajo.
+
+### Corrección de Bonferroni
+
+```{r}
+Bonferroni = pairwise.t.test(Data$Peso, Data$Tratamiento, p.adj = "bonferroni")
+print(Bonferroni)
+```
+
+Como se puede ver, los p-valores para todas las comparasiones son muy grandes, confirmando los resultados de ANOVA que indcan que no hay diferencias claras entre los tratamientos.
+
+### Prueba LSD
+
+La siguiente gráfica muestra los intervalos de confianza para las medias de los diferentes tratamientos utilizando un nivel de significancia corregido, de forma que el nivel de significancia global de las comparasiones múltiples sea 0.05. Como todas las líneas tienen la misma letra y color, esto indica que no hay evidencia de que los tratamiento hagan diferencia.
+
+```{r, warning=FALSE}
+LSD = LSD.test(ANOVA, "Tratamiento", p.adj = "fdr")
+plot(LSD)
+```
+
+Notar que, si no se usa una corrección en el nivel de significancia, entonces los intervalos de confianza si muestran diferencias, lo cual puede llevar a conclusiones erroneas.
+
+```{r, warning=FALSE}
+LSD = LSD.test(ANOVA, "Tratamiento")
+plot(LSD)
+```
+
+### Prueba de Tukey
+
+La prueba de Tukey permite hacer comparasiones multiples entre los tratamientos y se recomienda cuando el experimento está balanceado, es decir, cuando el número de obsrvaciones de cada tratamiento es el mismo. La siguiente gráfica muestra los intervalos de confianza **corregidos** para la comparación dos a dos la medias de cada tratamiento.
+
+```{r}
+Tukey = TukeyHSD(ANOVA, "Tratamiento")
+ # Cambia los márgenes de la grafica
+# default par(mar = c(5.1, 4.1, 4.1, 2.1))
+par(mar = c(5, 10, 5, 5)) # Cambia los márgenes de la gráfica
+plot(Tukey, las=1)
+print(Tukey)
+```
+
+Se puede ver que todas las comparaciones múltiples indican que no hay grupos distintos, lo cual ya sabíamos de la prueba F del análisis de varianza.
+
+**Ejemplo 3: Retinosis.** En un estudio de **retinosis pigmentaria**, 211 pacientes fueron agrupados en 4 grupos dependiendo del patrón de herencia de la enfermedad. Para cada paciente, la agudeza visual se midió en cada ojo y los dos valores fueron promediados. Los datos se encuentran en el archivo **retinosis.csv**. Se desea saber si existe alguna diferencia en la agudeza visual debida al patrón de herencia.
+
+Primero cargamos los datos.
+
+```{r}
+rm(list=ls())
+D = read.csv("Data/retinosis.csv", header= TRUE, as.is = FALSE)
+str(D)
+```
+
+Hacemos un análisis descriptivo
+
+```{r}
+by(D$Agudeza, D$Herencia, summary)
+par(mar = c(11,4,2,2))
+plot(D$Herencia, D$Agudeza, las = 2, xlab = "", ylab = "Agudeza visual")
+```
+
+Ahora corremos la prueba de análsis de varianza.
+
+```{r}
+ANOVA = aov(Agudeza ~ Herencia, data = D)
+summary(ANOVA)
+```
+
+Como el p-valor es pequeño, al menos si elegimos un nivel de significancia de 0.05, entonces rechazamos al hipótesis nula. Es decir, existe al menos un tipo de herencia de la retinosis que hace que la agudeza visual media sea distinta.
+
+Para identificar que grupos son distintos, hacemos una análisis de pruebas múltiples.
+
+```{r}
+Tukey = TukeyHSD(ANOVA, "Herencia")
+ # Cambia los márgenes de la grafica
+# default par(mar = c(5.1, 4.1, 4.1, 2.1))
+par(mar = c(5, 20, 3, 2)) # Cambia los márgenes de la gráfica
+plot(Tukey, las=1)
+print(Tukey)
+```
+
+De la prueba de Tukey concluimos que los grupos que tienen una agudeza visual distinta son Sex-linekd RP y Autosomal recessive RP. Además, la agudeza visual es más grande en el grupo Autosomal recessive RP que en el grupo Sex-linekd RP.
+
+Ahora comparamos los grupos con la prueba LSD.
+
+```{r}
+LSD = LSD.test(ANOVA, "Herencia", p.adj = "fdr")
+par(mar = c(11, 5, 4, 2)) 
+plot(LSD,las = 2, ylab = "Agudeza visual")
+```
+
+Esto indicaría que los grupos Autosomal dominant RP y Sex-linked Rp son distintos de Autosomal recessive RP y Isolate RP.
+
+Ahora hacemos la comparación de medias mediante el método de Bonferroni.
+
+```{r}
+Bonferroni = pairwise.t.test(D$Agudeza, D$Herencia, p.adj = "bonferroni")
+print(Bonferroni)
+```
+
+Este método nos da la misma conclusión que el método de Tukey.
+
+Ahora hacemos la validación de los supuestos. Primero vemos las gráficas de residuales.
+
+```{r}
+plot(ANOVA)
+```
+
+A primera vista, no parece haber problemas con los supuestos de normalidad y homogeneidad de varianzas. Para tener más certeza, hacemos las pruebas de hipótesis de normalidad primero.
+
+```{r}
+by(D$Agudeza, D$Herencia, shapiro.test)
+```
+
+Todas las pruebas tienen p-valores grandes por lo que no hay evidencia en contra de la normalidad de los datos.
+
+Ahora hacemos las prueba de homogeneidad de varianzas.
+
+```{r}
+bartlett.test(D$Agudeza, D$Herencia)
+leveneTest(D$Agudeza, D$Herencia)
+fligner.test(D$Agudeza, D$Herencia)
+```
+
+Todas las pruebas muestran que no hay evidencia en contra de la hipótesis de homogeneidad de varianzas. Esto quire decir que no hay evidencia de que los supuestos del análisis de varianzas sean incorrectos y, por lo tanto, las conclusiones del análisis son válidas.
+
+**Ejemplo 4: e-Sports** En una encuesta hecha a jugadores profesionales de videojuegos, se obtuvo el número promedio de horas que entrenan al día. Los jugadores fueron separados en 4 grupos de acuerdo con su especialidad: juegos de carreras, deportes, peleas y disparos en primera persona. Los datos obtenidos se encuentran en el archivo **esports.csv**. ¿Estos datos muestran diferencias entre las distintas especialidades?
+
+Primero cargamos los datos.
+
+```{r}
+rm(list=ls())
+D = read.csv("Data/esports.csv", header = TRUE, as.is = FALSE)
+str(D)
+```
+
+Hacemos un análisis descriptivo.
+
+```{r}
+by(D$Tiempo, D$Especialidad, summary)
+plot(D$Especialidad, D$Tiempo, col = "magenta", ylab = "Tiempo de entrenamiento diario (horas)")
+```
+
+Corremos la prueba de análisis de varianza.
+
+```{r}
+ANOVA = aov(Tiempo ~ Especialidad, data = D)
+summary(ANOVA)
+```
+
+Como el p-valor es muy pequeño, entonces rechazamos la hipótesis nula y concluimos que los tiempos de entrenamiento en al menos un tipo de juego son distintos.
+
+Para saber que especialidades son diferentes, hacemos un análisis de pruebas múltiples mediante el método de Tukey.
+
+```{r}
+Tukey = TukeyHSD(ANOVA, "Especialidad", conf.level = 0.99)
+par(mar=c(5,10,5,5))
+plot(Tukey, las = 2)
+```
+
+Aquí podemos ver que las únicas especialidades que no parecen ser distintas son Peleas y Carreras, con un 99% de confianza. Más aún, las especialidades que parecen ser más distinas, en términos del tiempo de entrenamiento, son Disparos y deportes.
+
+Por último, validamos los supuestos del análisis de varianza.
+
+```{r}
+plot(ANOVA)
+```
+
+Visualmente, no observamos problemas con el supuesto de normalidad y de homogeneidad de varianzas. Esto se corrobora viendo los resultados de las pruebas de normalidad y homocedasticidad.
+
+```{r}
+by(D$Tiempo, D$Especialidad, shapiro.test)
+bartlett.test(D$Tiempo, D$Especialidad)
+leveneTest(D$Tiempo, D$Especialidad)
+fligner.test(D$Tiempo, D$Especialidad)
+```
+
+**Ejemplo 5: Consumo de calcio**
+
+Determinar si existe una diferencia en el consumo promedio diario de calcio en tres grupos de personas: con densidad ósea normal, con osteopenia y con osteoporosis. El análisis de varianza muestra que el grupo de personas con osteoporosis tiene menor consumo de calcio en comparación con el grupo control.
+
+```{r}
+rm(list=ls())
+D = read.csv("Data/calcio.csv", header = TRUE, as.is = FALSE)
+str(D)
+
+x1 = D$Calcio[D$Grupo == "Control"]
+x2 = D$Calcio[D$Grupo == "Osteopenia"]
+x3 = D$Calcio[D$Grupo == "Osteoporosis"]
+
+boxplot(x1, x2, x3, names = c("Control", "Osteopenia", "Osteoporosis"), col = "dodgerblue")
+
+A = aov(Calcio ~ Grupo, data = D)
+summary(A)
+plot(A)
+
+by(D$Calcio, D$Grupo, shapiro.test)
+bartlett.test(D$Calcio, D$Grupo)
+
+Tuk = TukeyHSD(A)
+print(Tuk)
+par(mar = c(5, 15, 5, 2))
+plot(Tuk, las = 2)
+
+Bonferroni = pairwise.t.test(D$Calcio, D$Grupo, p.adj = "bonferroni")
+print(Bonferroni)
+```
+
+
+
+**Ejemplo 6: Analisis de dietas de pollos.** Se realiza un estudio para comparar la efectividad de varios suplementos alimenticios en pollos. Los datos se encuentran en el dataset **chickwts**. La prueba anova revela que hay varios tipos de sumplementos que hacen diferencia en el peso de los pollos.
+
+```{r}
+rm(list=ls())
+str(chickwts)
+
+A = aov(chickwts$weight ~ chickwts$feed)
+summary(A)
+plot(A)
+
+by(chickwts$weight, chickwts$feed, shapiro.test)
+
+bartlett.test(chickwts$weight, chickwts$feed)
+
+Tuk = TukeyHSD(A)
+print(Tuk)
+par(mar = c(5,10,5,2))
+plot(Tuk, las = 2, cex.axis = 0.9)
+```
+
+### Tipos de ANOVA
+
+Existen varios tipos de análisis de varianza.
+
+1.  **ANOVA de un factor (unidireccional o una vía):** Se utiliza cuando se tiene una sola variable independiente (factor) con más de dos niveles. Este tipo de ANOVA permite comparar las medias de varios grupos bajo un solo factor.
+
+2.  **ANOVA de dos factores (bidireccional o dos vías):** Se utiliza cuando se tienen dos factores (o variables independientes) y se desea analizar su efecto tanto de manera independiente como en interacción. Este tipo permite estudiar no solo los efectos principales de cada factor, sino también si existe una interacción entre ellos.
+
+3. **ANOVA de un factor con bloques**: Se utriliza cuando existen factores de ruido que no pueden ser controlados. Para evitar los efectos de estos factores de ruido, se crean bloques con condiciones de ruido similares en los que se aplican todos los tratamientos.
+
+4.  **ANOVA de medidas repetidas:** Se usa cuando se tiene una variable dependiente medida varias veces en los mismos sujetos, como en estudios longitudinales o experimentos que implican mediciones en diferentes momentos.
+
+
+## ANOVA de dos vías
+
+En un análisis de varianza de dos vías se tienen dos factores, es decir, dos aspectos del experimento que se pueden modificar. Cada factor tiene $I$ y $J$ posibles valores (niveles). De esta forma, un tratamiento es una combinación de los niveles de los factores. Los tratamientos determinan la cantidad de grupos que se van a comparar. Se desea saber si los factores tienen efectos individuales sobre la variable respuesta y efectos de interacción.
+
+## Modelo de ANOVA de dos vías
+
+Se asume que las obseervaciones tiene la siguiente estrucutra:
+
+$$ Y_{ijk} = \mu + \tau_i + \delta_j + \gamma_{ij} +\epsilon_{ijk},
+$$
+
+donde:
+
+-   $Y_{ijk}$ es el valor observado para el $k$-ésimo individo del tratamiento generado por los niveles $i$ y $j$ de los factores 1 y 2, respectivamente;
+-   $\mu$ es la media global;
+-   $\tau_i$ es el efecto del $i$-ésimo nivel del factor 1;
+-   $\delta_j$ es el efecto del $j$-ésimo nivel del factor 2;
+-   $\gamma_{ij}$ es el efecto de interacción entre el nivel $i$ del factor 1 y el nivel $j$ del factor 2.
+-   $\epsilon_{ijk}$ es el error aleatorio de cada individuo, que sigue una distribución Normal con media cero y varianza $\sigma^2$.
+
+Las hipótesis a probar son:
+
+1. $H_0$: $\tau_1 = \tau_2 = \dots = \tau_I = 0$ vs. $H_1$: al menos un efecto es distinto de cero.
+2. $H_0$: $\delta_1 = \delta_2 = \dots = \delta_J = 0$ vs. $H_1$: al menos un efecto es distinto de cero.
+3. $H_0$: $\gamma_{11} = \gamma_{12} = \dots = \gamma_{IJ} = 0$ vs. $H_1$: al menos un efecto es distinto de cero.
+
+**Ejemplo.** Se hace un experimento para analizar el efecto del estres mecanico y el nivel de luz sobre el crecimiento de plantas de soya. Para esto se usan dos niveles de estres (control, estres por 20 minutos) y dos niveles de iluminacion (baja y alta). Se mide el área de las hojas de las plantas. Los datos se encuentran en el archivo **Soybean_plants.csv**.
+
+Comenzamos cargando los datos y haciendo un análisis descriptivo de los cuatro tratamientos posibles:
+
+1. no estrés y luz baja;
+2. estrés y luz baja;
+3. no estrés y luz alta;
+4. estrés y luz alta.
+
+```{r}
+# Cargar datos
+D = read.csv("Data/Soybean_plants.csv", header=TRUE, as.is=FALSE)
+str(D)
+by(D$Area, list(D$Estres, D$Iluminacion), summary)
+
+x1 = D$Area[D$Estres == "Control" & D$Iluminacion == "Luz baja"]
+x2 = D$Area[D$Estres == "Estresado" & D$Iluminacion == "Luz baja"]
+x3 = D$Area[D$Estres == "Control" & D$Iluminacion == "Luz alta"]
+x4 = D$Area[D$Estres == "Estresado" & D$Iluminacion == "Luz alta"]
+par(mar = c(10, 5, 5, 2))
+boxplot(x1, x2, x3, x4, names = c("Control - Luz baja", "Estreado - Luz baja", "Control - Luz alta", "Estresado - Luz alta"), las = 2, col = "dodgerblue" )
+```
+
+El análsis descriptivo sugiere que si hay diferencias entre los grupos. Hacemos el análisis de varianza para evaluar esta apreciación.
+
+```{r}
+ANOVA = aov(Area ~ Estres * Iluminacion, data=D)
+summary(ANOVA)
+```
+
+El primer p-valor indica que los niveles de estrés tienen un efecto sobre el crecimiento de las plantas. EL segundo p-valor indica que el nivel de iluminación también tiene un efecto en el crecimiento. El útlimo p-valor nos indica que no hay efectos de interación entre los factores.
+
+Una gráfica de interacción muestra los promedios de cada tratamiento. Esta gráfica nos permite entender los distintos efectos de los factores.
+
+```{r}
+interaction.plot(x.factor = D$Estres, trace.factor = D$Iluminacion,
+                 response = D$Area, ylab="Area de las hojas",
+                 xlab="Nivel de estres", col=c("blue","black"),
+                 trace.label = "Nivel de luz")
+```
+
+La gráfica de interacción muestra que estresar mecánicamenete a las plantas reduce el crecimiento, y esto es cierto ya sea que el nivel de luz sea alto o bajo. Por otro lado, el nivel de luz alto incrementa el crecimiento, lo cual es cierto sin importar si se está en el grupo control o en el grupo estresado. El hecho de que las líneas sean casi paralelas indica que no hay efectos de interacción entre los niveles estrés e iluminación.
+
+Se pueden hacer un análisis de pruebas por pares para entender mejor las diferencias entre los tratamientos.
+
+```{r}
+# Analisis de tratamientos por pares
+Tuk = TukeyHSD(ANOVA)
+par(mar = c(5,15,2,2))
+plot(Tuk, las = 2)
+```
+
+
+**Ejemplo.** Se aplican pinturas tapaporos para aeronaves en superficies de aluminio con dos métodos: inmersión y rociado. La finalidad del tapaporos es mejorar la adhesión de la pintura. Un grupo de ingenieros desea saber si hay diferencia entre tres tipos de tapaporos, además del método de aplicación. Para obtener una respuesta, se pintan tres piezas de aluminio con cada tapaporos y cada método de aplicación. Luego, se pintan las piezas con pintura y se mide la fuerza de adhesión. Los datos se encuentran en el archivo **Tapaporos.csv**. En base a los datos, ¿los ingenieros deberían recomendar algún tapaporos y/o algún método de rociado?
+
+
