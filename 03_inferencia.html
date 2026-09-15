@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>3&nbsp; Inferencia estadística – Introducción a la Estadística usando R Notebooks</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./04_anova.html" rel="next">
+<link href="./02_descriptiva.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-4c1498b69564d98984da3e9f7a45d87c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03_inferencia.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Inferencia estadística</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introducción a la Estadística usando R Notebooks</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sobre el curso</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introducción a R, R-Studio y Markdown</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_descriptiva.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Estadística Descriptiva</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_inferencia.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Inferencia estadística</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_anova.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Análisis de varianza (ANOVA)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_regresion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Regresión lineal</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#inferencia-puntual" id="toc-inferencia-puntual" class="nav-link active" data-scroll-target="#inferencia-puntual"><span class="header-section-number">3.1</span> Inferencia puntual</a></li>
+  <li><a href="#intervalos-de-confianza" id="toc-intervalos-de-confianza" class="nav-link" data-scroll-target="#intervalos-de-confianza"><span class="header-section-number">3.2</span> Intervalos de confianza</a>
+  <ul class="collapse">
+  <li><a href="#intervalo-para-la-media-de-una-población" id="toc-intervalo-para-la-media-de-una-población" class="nav-link" data-scroll-target="#intervalo-para-la-media-de-una-población"><span class="header-section-number">3.2.1</span> Intervalo para la media de una población</a></li>
+  <li><a href="#intervalo-para-la-diferencia-de-medias-de-dos-grupos" id="toc-intervalo-para-la-diferencia-de-medias-de-dos-grupos" class="nav-link" data-scroll-target="#intervalo-para-la-diferencia-de-medias-de-dos-grupos"><span class="header-section-number">3.2.2</span> Intervalo para la diferencia de medias de dos grupos</a></li>
+  <li><a href="#intervalo-para-la-proporción-de-éxitos" id="toc-intervalo-para-la-proporción-de-éxitos" class="nav-link" data-scroll-target="#intervalo-para-la-proporción-de-éxitos"><span class="header-section-number">3.2.3</span> Intervalo para la proporción de éxitos</a></li>
+  <li><a href="#intervalo-para-la-diferencia-de-proporciones-de-éxito" id="toc-intervalo-para-la-diferencia-de-proporciones-de-éxito" class="nav-link" data-scroll-target="#intervalo-para-la-diferencia-de-proporciones-de-éxito"><span class="header-section-number">3.2.4</span> Intervalo para la diferencia de proporciones de éxito</a></li>
+  </ul></li>
+  <li><a href="#pruebas-de-hipótesis" id="toc-pruebas-de-hipótesis" class="nav-link" data-scroll-target="#pruebas-de-hipótesis"><span class="header-section-number">3.3</span> Pruebas de hipótesis</a>
+  <ul class="collapse">
+  <li><a href="#errores-tipo-i-y-tipo-ii" id="toc-errores-tipo-i-y-tipo-ii" class="nav-link" data-scroll-target="#errores-tipo-i-y-tipo-ii"><span class="header-section-number">3.3.1</span> Errores Tipo I y Tipo II</a></li>
+  <li><a href="#revisión-del-supuesto-de-normalidad" id="toc-revisión-del-supuesto-de-normalidad" class="nav-link" data-scroll-target="#revisión-del-supuesto-de-normalidad"><span class="header-section-number">3.3.2</span> Revisión del supuesto de normalidad</a></li>
+  <li><a href="#pruebas-de-bondad-de-ajuste-para-proporciones" id="toc-pruebas-de-bondad-de-ajuste-para-proporciones" class="nav-link" data-scroll-target="#pruebas-de-bondad-de-ajuste-para-proporciones"><span class="header-section-number">3.3.3</span> Pruebas de bondad de ajuste para proporciones</a></li>
+  <li><a href="#pruebas-de-independencia" id="toc-pruebas-de-independencia" class="nav-link" data-scroll-target="#pruebas-de-independencia"><span class="header-section-number">3.3.4</span> Pruebas de independencia</a></li>
+  </ul></li>
+  <li><a href="#apéndice-distribuciones-de-probabilidad-en-r" id="toc-apéndice-distribuciones-de-probabilidad-en-r" class="nav-link" data-scroll-target="#apéndice-distribuciones-de-probabilidad-en-r"><span class="header-section-number">3.4</span> Apéndice: Distribuciones de probabilidad en R</a>
+  <ul class="collapse">
+  <li><a href="#distribución-normal" id="toc-distribución-normal" class="nav-link" data-scroll-target="#distribución-normal"><span class="header-section-number">3.4.1</span> Distribución Normal</a></li>
+  <li><a href="#distribución-binomial" id="toc-distribución-binomial" class="nav-link" data-scroll-target="#distribución-binomial"><span class="header-section-number">3.4.2</span> Distribución Binomial</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Inferencia estadística</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>La <strong>inferencia estadística</strong> consiste en hacer estimaciones (afirmaciones) de cantidades de interés desconocidas, muchas veces llamadas <em>parámetros</em>, a través de una muestra de una población. Hay tres tipos básicos de inferencia:</p>
+<ul>
+<li><strong>Inferencia puntual</strong>. Da un único valor para estimar una cantidad de interés desconocida, como la media o la proporción.</li>
+<li><strong>Inferencia por intervalo</strong>. Consiste en un rango de valores que se utiliza para estimar un parámetro desconocido de una población. Este intervalo viene acompañado de un nivel de confianza, que indica la probabilidad de que el intervalo contenga el valor real del parámetro.</li>
+<li><strong>Pruebas de hipótesis</strong>. Procedimientos que analizan la cantidad de información a favor o en contra de una hipótesis de trabajo.</li>
+</ul>
+<section id="inferencia-puntual" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="inferencia-puntual"><span class="header-section-number">3.1</span> Inferencia puntual</h2>
+<p>Hay varios estimadores para una cantidad de interés. Por ejemplo, para estimar la media <span class="math inline">\(\mu\)</span> de una población, podemos usar el promedio simple de la muestra, <span class="math inline">\(\bar{x}\)</span>, o la mediana de la muestra, <span class="math inline">\(\tilde{x}\)</span>. No obstante, se sabe que ciertos estimadores tienen mejores propiedades estadísticas que otros. A continuación se muestran algunos estimadores puntuales que se ocupan en diversos procedimientos.</p>
+<ul>
+<li>Media poblacional <span class="math inline">\(\mu\)</span>. <span class="math display">\[ \bar{x} = \frac{1}{n}\sum_{i=1}^n x_i.\]</span></li>
+<li>Desviación estándar poblacional <span class="math inline">\(\sigma\)</span>. <span class="math display">\[ s = \sqrt{\frac{1}{n-1}\sum_{i=1}^n (x_i-\bar{x})^2}.\]</span></li>
+<li>Proporción de éxitos <span class="math inline">\(p\)</span>. <span class="math display">\[\hat{p} = \frac{\text{\# de éxitos}}{\# \text{ de observaciones}}.\]</span></li>
+<li>Coeficiente de correlación entre dos variables <span class="math inline">\(\rho\)</span>. <span class="math display">\[ \hat{\rho} = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum_{i=1}^n (x_i - \bar{x})^2 \sum_{i=1}^n (y_i - \bar{y})^2}},\]</span></li>
+</ul>
+</section>
+<section id="intervalos-de-confianza" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="intervalos-de-confianza"><span class="header-section-number">3.2</span> Intervalos de confianza</h2>
+<p>Se pueden crear intervalos de confianza para distintas cantidades de interés. Aquí mostraremos algunos de los casos más comunes.</p>
+<section id="intervalo-para-la-media-de-una-población" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="intervalo-para-la-media-de-una-población"><span class="header-section-number">3.2.1</span> Intervalo para la media de una población</h3>
+<p>Si tenemos una muestra de una variable cuantitativa de una población de interés, entonces podemos crear intervalos de confianza para el valor medio de dicha población. Sea <span class="math inline">\(\mu\)</span> la media de la población. Un intervalo del <span class="math inline">\(100(1-\alpha)\)</span>% de confianza para <span class="math inline">\(\mu\)</span> está dada por: <span class="math display">\[ \bar{x}\pm t_{1-\alpha/2}\frac{s}{\sqrt{n}},\]</span> donde <span class="math inline">\(s\)</span> representa la desviación estándar muestral de los datos, <span class="math inline">\(n\)</span> es el número de observaciones, y <span class="math inline">\(t_{1-\alpha/2}\)</span> es un cuantil de una distribución <strong>t-Student</strong> con <span class="math inline">\(n-1\)</span> grados de libertad.</p>
+<p><strong>Ejemplo</strong>: Suponga que deseamos estimar la longitud media de los pétalos de una flor iris en su variante setosa. El siguiente código nos muestra las estimaciones puntuales y por intervalo a partir de una muestra de tamaño 50 que se encuentra en el dataset <strong>iris</strong>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> iris<span class="sc">$</span>Petal.Length[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>]</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(x, <span class="at">conf.level =</span> <span class="fl">0.99</span>, <span class="at">mu =</span> <span class="dv">2</span>) <span class="co"># crea un intervalo de confianza para los datos del vector x</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    One Sample t-test
+
+data:  x
+t = -21.906, df = 49, p-value &lt; 2.2e-16
+alternative hypothesis: true mean is not equal to 2
+99 percent confidence interval:
+ 1.396181 1.527819
+sample estimates:
+mean of x 
+    1.462 </code></pre>
+</div>
+</div>
+</section>
+<section id="intervalo-para-la-diferencia-de-medias-de-dos-grupos" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2" class="anchored" data-anchor-id="intervalo-para-la-diferencia-de-medias-de-dos-grupos"><span class="header-section-number">3.2.2</span> Intervalo para la diferencia de medias de dos grupos</h3>
+<p>Suponer que se tiene una muestra de dos grupos en los que se realiza la misma medición. Denotamos a estas muestras por <span class="math inline">\(x_1,x_2,\ldots,x_n\)</span> y <span class="math inline">\(y_1,y_2,\ldots, y_n\)</span>. Sean <span class="math inline">\(\mu_x\)</span> y <span class="math inline">\(\mu_y\)</span> las medias poblacionales de cada muestra, respectivamente. Se desea saber si hay evidencia significativa de que ambos grupos, en promedio, sean iguales. Es decir, se desea saber si es razonable pensar que <span class="math inline">\(d = \mu_x - mu_y = 0\)</span>. Para esto, construimos un intervalo de confianza para <span class="math inline">\(d\)</span>. Los resultados se interpretan como sigue:</p>
+<ul>
+<li>Si el intervalo contiene a 0, entonces no hay diferencia significativa entre <span class="math inline">\(\mu_x\)</span> y <span class="math inline">\(mu_y\)</span>.</li>
+<li>Si el intervalo es positivo, entonces <span class="math inline">\(\mu_x &gt; \mu_y\)</span>.</li>
+<li>Si el intervalo es positivo, entonces <span class="math inline">\(\mu_x &lt; \mu_y\)</span>.</li>
+</ul>
+<p>Por simplicidad, se omiten las fórmulas para la obtención del intervalo.</p>
+<p><strong>Ejemplo</strong>: Suponga que se desea comparar la longitud media del ancho de los pétalos de la variante setosa de iris contra la variante versicolor. El intervalo de confianza del 95% muestra que la variante versicolor tiene pétalos más anchos que la variante setosa por al menos 0.25 cm, y hasta 1.33 cm.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> iris<span class="sc">$</span>Petal.Width[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>] <span class="co"># muestra 1, setosa</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> iris<span class="sc">$</span>Petal.Width[<span class="dv">51</span><span class="sc">:</span><span class="dv">100</span>] <span class="co"># muestra 2, versicolor</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(x, y) <span class="co"># intervalo para la diferencia d = x-y</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  x and y
+t = -34.08, df = 74.755, p-value &lt; 2.2e-16
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -1.143133 -1.016867
+sample estimates:
+mean of x mean of y 
+    0.246     1.326 </code></pre>
+</div>
+</div>
+<p>El procedimiento anterior se conoce como prueba <strong>t</strong> para comparación de medias y es un procedimiento <strong>paramétrico</strong>, es decir, que supone que los datos siguen una distribución de probabilidad paramétrica, en este caso concreto, una distribución Normal.</p>
+<p>Existen pruebas no paramétricas para comparar medias de grupos. Estas pruebas no hacen supuestos sobre el comportamiento de los datos. Entre ellas se encuentra la prueba de Wilcox.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wilcox.test</span>(x, y, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="co"># prueba no parametrica de comparación de medias</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Wilcoxon rank sum test with continuity correction
+
+data:  x and y
+W = 0, p-value &lt; 2.2e-16
+alternative hypothesis: true location shift is not equal to 0
+95 percent confidence interval:
+ -1.100058 -1.000032
+sample estimates:
+difference in location 
+              -1.09994 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(x, y, <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"cyan"</span>, <span class="st">"magenta"</span>), <span class="at">names =</span> <span class="fu">c</span>(<span class="st">"Setosa"</span>, <span class="st">"Versicolor"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_inferencia_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="intervalo-para-la-proporción-de-éxitos" class="level3" data-number="3.2.3">
+<h3 data-number="3.2.3" class="anchored" data-anchor-id="intervalo-para-la-proporción-de-éxitos"><span class="header-section-number">3.2.3</span> Intervalo para la proporción de éxitos</h3>
+<p>Si se tiene una muestra de una variable categórica binaria, la cual representa la presencia o ausencia de una característica en los individuos de la polbación, podemos estimar la proporción de éxitos y dar un intervalo de confianza.</p>
+<p><strong>Ejemplo</strong>: Suponga que se desea dar un intervalo de confianza para la proporción de individuos que presentan neumonía a partir de la base de datos de COVID-19. El intervalo del 95% de confianza muestra que entre el 19.8% y el 20.1% de la población padece cuadros de neumonía.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>D <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"Data/COVID19MEXICO.csv"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">as.is =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">sum</span>(D<span class="sc">$</span>NEUMONIA <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="fu">dim</span>(D)[<span class="dv">1</span>]</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.test</span>(x, n)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    1-sample proportions test with continuity correction
+
+data:  x out of n, null probability 0.5
+X-squared = 64475, df = 1, p-value &lt; 2.2e-16
+alternative hypothesis: true p is not equal to 0.5
+95 percent confidence interval:
+ 0.1977301 0.2014430
+sample estimates:
+        p 
+0.1995801 </code></pre>
+</div>
+</div>
+</section>
+<section id="intervalo-para-la-diferencia-de-proporciones-de-éxito" class="level3" data-number="3.2.4">
+<h3 data-number="3.2.4" class="anchored" data-anchor-id="intervalo-para-la-diferencia-de-proporciones-de-éxito"><span class="header-section-number">3.2.4</span> Intervalo para la diferencia de proporciones de éxito</h3>
+<p>Suponga que se tienen dos poblaciones y en cada una se registra la presencia o ausencia de una característica. Denotamos las muestras obtenidas por <span class="math inline">\(x_1,x_2,\ldots,x_n\)</span> y <span class="math inline">\(y_1,y_2,\ldots, y_n\)</span>, y sean <span class="math inline">\(p_x\)</span> y <span class="math inline">\(p_y\)</span> la proporción de éxitos en cada muestra, respectivamente. Queremos saber si hay un diferencia significativa en las proporciones de éxito de cada grupo. Para esto, creamos un intervalo de confianza para <span class="math inline">\(d=p_x-p_y\)</span>. El resultado se interpreta como sigue:</p>
+<ul>
+<li>Si el intervalo contiene a 0, entonces no hay diferencia significativa entre <span class="math inline">\(p_x\)</span> y <span class="math inline">\(p_y\)</span>.</li>
+<li>Si el intervalo es positivo, entonces <span class="math inline">\(p_x &gt; p_y\)</span>.</li>
+<li>Si el intervalo es positivo, entonces <span class="math inline">\(p_x &lt; p_y\)</span>.</li>
+</ul>
+<p>Por simplicidad en la presentación, se omiten las fórmulas del intervalo.</p>
+<p><strong>Ejemplo</strong>. Se desea saber si la proporción de hombres con neumonía es distinta a la proporción de mujeres con ese padecimiento. De acuerdo al intervalo de confianza, hay entre 6.6% y 7.4% más casos de neumonía en hombres que en mujeres, con un 95% de confianza.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>index_men <span class="ot">=</span> D<span class="sc">$</span>SEXO <span class="sc">==</span> <span class="dv">2</span> <span class="sc">&amp;</span> D<span class="sc">$</span>NEUMONIA <span class="sc">==</span> <span class="dv">1</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>index_women <span class="ot">=</span> D<span class="sc">$</span>SEXO <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> D<span class="sc">$</span>NEUMONIA <span class="sc">==</span> <span class="dv">1</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">sum</span>(index_men)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">sum</span>(index_women)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>nx <span class="ot">=</span> <span class="fu">sum</span>(D<span class="sc">$</span>SEXO <span class="sc">==</span> <span class="dv">2</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>ny <span class="ot">=</span> <span class="fu">sum</span>(D<span class="sc">$</span>SEXO <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.test</span>(<span class="fu">c</span>(x,y), <span class="fu">c</span>(nx, ny))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    2-sample test for equality of proportions with continuity correction
+
+data:  c(x, y) out of c(nx, ny)
+X-squared = 1355.3, df = 1, p-value &lt; 2.2e-16
+alternative hypothesis: two.sided
+95 percent confidence interval:
+ 0.06649761 0.07410875
+sample estimates:
+   prop 1    prop 2 
+0.2395285 0.1692253 </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="pruebas-de-hipótesis" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="pruebas-de-hipótesis"><span class="header-section-number">3.3</span> Pruebas de hipótesis</h2>
+<p>En Estadística, una <strong>hipótesis</strong> es una afirmación sobre alguna carcterística de la población de interés. Más aún, una <strong>prueba estadística de hipótesis</strong> es un procedimiento mediante el cual se analiza si la información disponible de la población aporta evidencia a favor o en contra de una hipótesis.</p>
+<p>Los procedimientos de prueba de hipótesis requieren de cuatro elementos clave para su implementación:</p>
+<ul>
+<li>Dos hipótesis de trabajo, la <strong>hipótesis nula</strong> <span class="math inline">\(H_0\)</span> y la <strong>hipótesis alternativa</strong> <span class="math inline">\(H_1\)</span>.</li>
+<li>Una <strong>estadística de prueba</strong>, <span class="math inline">\(T(x_1,x_2,...,x_n)\)</span>, cuyos valores ayudan a determinar si la hipótesis nula parece razonable o no.</li>
+<li>La <strong>distribución de probabilidad de la estadística de prueba</strong> <span class="math inline">\(T(x_1,x_2,...,x_n)\)</span> bajo el supuesto de que <span class="math inline">\(H_0\)</span> es cierta.</li>
+<li>El <span class="math inline">\(p\)</span>-valor de la prueba, el cual indica la probabilidad de observar algo igual o aún más extremo de lo que los datos observados indican. Si el <span class="math inline">\(p\)</span>-valor es muy pequeño, entonces hay evidencia contra <span class="math inline">\(H_0\)</span> y se opta por rechazar la hipótesis nula. Por el contrario, si el <span class="math inline">\(p\)</span>-valor es my grande, entonces no hay evidencia en contra de <span class="math inline">\(H_0\)</span> y se opta por no rechazar la hipótesis nula. Es importante señalar que <strong>no rechazar</strong> <span class="math inline">\(H_0\)</span> no implica <strong>aceptar</strong> <span class="math inline">\(H_0\)</span>.</li>
+</ul>
+<p>Los siguientes ejemplos muestran situaciones donde es útil realizar pruebas de hipótesis.</p>
+<p><strong>Ejemplo:</strong> Una mujer afirma tener la habilidad de avidinar la forma en la que se preparó un té en Inglaterra, es decir, si se añade primero el té y luego la leche o viceversa. Para analizar esta afirmación, se realiza un experimento en el que se le dan 8 tasas de té, 4 de las cuales fueron preparadas añadiendo primero la leche y luego el té, mientras que en las otras 4 se añadió primero el té y luego la leche. Se utiliza el número de aciertos de cada tipo de preparación para determinar si la mujer tiene la habilidad o no.</p>
+<p><strong>Ejemplo:</strong> Se mide la densidad promedio de los huesos de la mano de un grupo de mujeres de la tercera edad que sufren de osteoporosis. Se desea saber si estos datos siguen una distribución Normal.</p>
+<p><strong>Ejemplo:</strong> Se mide el ritmo cardiaco de 50 niños y 50 niñas recién nacidos. Se desea saber si existe alguna diferencia en el ritmo cardiaco de estos grupos.</p>
+<section id="errores-tipo-i-y-tipo-ii" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="errores-tipo-i-y-tipo-ii"><span class="header-section-number">3.3.1</span> Errores Tipo I y Tipo II</h3>
+<p>En un procedimeinto de pruebas de hipótesis pueden ocurrir alguno de los siguientes cuatro escenarios:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Realidad</strong></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Decisión</strong></td>
+<td><span class="math inline">\(H_0\)</span> <strong>cierta</strong></td>
+<td><span class="math inline">\(H_0\)</span> <strong>falsa</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Rechazar</strong> <span class="math inline">\(H_0\)</span></td>
+<td>Error Tipo I</td>
+<td>Correcto</td>
+</tr>
+<tr class="odd">
+<td><strong>No rechazar</strong> <span class="math inline">\(H_0\)</span></td>
+<td>Correcto</td>
+<td>Error Tipo II</td>
+</tr>
+</tbody>
+</table>
+<p>Es posible controlar la probabilidad de ambos tipos de errores, pero no de forma simultanea. Es decir, si bajamos la probabilidad de Error Tipo I, entonces incrementamos la probabilidad de Error Tipo II y viceversa. Es necesario analizar el problema en cuestión y determinar cuál de los dos tipo de error es más importante controlar.</p>
+<p>El <strong>nivel de significancia</strong> de una prueba de hipótesis se denota por <span class="math inline">\(\alpha\)</span> y representa la probabilidad de Error Tipo I. Por ejemplo, si <span class="math inline">\(\alpha=0.05\)</span>, entonces estamos diciendo que <span class="math inline">\(P(\)</span>Rechazar <span class="math inline">\(H_0 | H_0\)</span> es cierta<span class="math inline">\() = 0.05\)</span>.</p>
+<p>El <strong>poder</strong> o <strong>potencia</strong> de una prueba de hipótesis está dado por 1-<span class="math inline">\(\beta\)</span>, donde <span class="math inline">\(\beta\)</span> representa la probabilidad de Error Tipo II. Dicho de otra forma, la potencia de una prueba de hipótesis nos indica que tan buena es la prueba para rechazar <span class="math inline">\(H_0\)</span> cuando <span class="math inline">\(H_0\)</span> debe ser rechazada.</p>
+<p>Típicamente, para aceptar o rechazar una prueba de hipótesis se fija el nivel de significancia <span class="math inline">\(\alpha\)</span>, es decir, la probabilidad de error Tipo I. Si el <span class="math inline">\(p\)</span>-valor es menor al nivel de significancia, entonces se rechaza la hipótesis nula, y si el p-valor es más grande que el nivel de significancia, entonces no se rechaza <span class="math inline">\(H_0\)</span>. En la práctica, se suele usar niveles de significancia de 0.1, 0.05 y 0.01, siendo 0.05 el valor más común. Mediante este procedimiento cotrolamos el error Tipo I.</p>
+</section>
+<section id="revisión-del-supuesto-de-normalidad" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="revisión-del-supuesto-de-normalidad"><span class="header-section-number">3.3.2</span> Revisión del supuesto de normalidad</h3>
+<p>Si se tiene un conjunto de datos de una cierta población, una de las tareas que se repite constantemente es revisar si hay evidencia de que los datos vengan de una distribución Normal. Para esto, podemos usar algunas gráficas para evaluar visualemente el supuesto de normalidad, o bien, pruebas de hipótesis.</p>
+<p>La primera forma de revisar normalidad es mediante un <strong>histograma</strong>. Si el histograma es simétrico, entonces tenemos evidencia de normalidad.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># longitud de pétalo de la especie setosa</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> iris<span class="sc">$</span>Petal.Length[iris<span class="sc">$</span>Species <span class="sc">==</span> <span class="st">"setosa"</span>] </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(x, <span class="at">main =</span> <span class="st">"Longitud de pétalo para setosa"</span>, <span class="at">xlab =</span> <span class="st">"Longitud de pétalo"</span>, <span class="at">ylab =</span> <span class="st">"Frecuencia"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_inferencia_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>En este ejemplo, la longitud del pétalo de la variante setosa de iris parece seguir una distribución Normal.</p>
+<p>Otra forma de analizar normalidad es a través de un QQplot (gráfica de cuantiles).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(x) <span class="co"># gráfica de cuantiles</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(x) <span class="co"># línea que deberían seguir los datos si hay normalidad</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_inferencia_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La gráfica anterior muestra que algunos puntos se alejan de la línea teórica, lo cual podría ser evidencia de falta de normalidad.</p>
+<p>La forma de evaluar normalidad más fácil de interpretar es mediante una prueba de hipótesis. En este caso, usaremos la prueba de Shapiro-Wilk.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  x
+W = 0.95498, p-value = 0.05481</code></pre>
+</div>
+</div>
+<p>El p-valor de la prueba de Shapiro es grande, por lo que no hay suficiente evidencia para rechazar la hipótesis de normalidad.</p>
+<p>Si el tamaño de muestra es pequeño, ninguna de las estrategias anteriores es completamente concluyente. Abajo se muestra un código en el que se simulan 10 datos de una distribución Nomal estándar, es decir, con media <span class="math inline">\(\mu = 0\)</span> y desviación estándar <span class="math inline">\(\sigma = 1\)</span>. Aquí se puede ver que el supuesto de normalidad puede ser rechazada, aún cuando los datos realmente son normales. No obstante, la probabilidad de cometer un error es pequeña.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">22</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] -0.51213909  2.48518368  1.00782615  0.29281457 -0.20895936  1.85809239
+ [7] -0.06602641 -0.16276495 -0.19986068  0.30056173</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  x
+W = 0.83742, p-value = 0.04109</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(x, <span class="at">main =</span> <span class="st">"Muestra sintética de datos normales"</span>, <span class="at">xlab =</span> <span class="st">"x"</span>, <span class="at">ylab =</span> <span class="st">"Frecuencia"</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(x, <span class="at">main =</span> <span class="st">"QQplot de datos sintéticos"</span>, <span class="at">xlab =</span> <span class="st">"Cuantiles teóricos"</span>, <span class="at">ylab =</span> <span class="st">"Cuantiles muestrales"</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_inferencia_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="pruebas-de-bondad-de-ajuste-para-proporciones" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="pruebas-de-bondad-de-ajuste-para-proporciones"><span class="header-section-number">3.3.3</span> Pruebas de bondad de ajuste para proporciones</h3>
+<p>Suponer que tenemos una variable categórica con 3 o más caategorías. Un ejemplo de esto puede ser el nivel socioeconómico (bajo, medio y alto). El objetivo es saber si las frecuencias de las distitnas categorías concuerdan con ciertas frecuencias propuestas por un investigador. A este tipo de procedimientos se les conoce como <strong>pruebas de bondad de dajuste</strong>.</p>
+<p><strong>Ejemplo</strong>: Se tienen los conteos (10, 35, 55) de las clases (alto, medio, bajo) y se piensa que estos conteos deberían seguir una proporción (1%, 20%,79%). ¿Los datos concuerdan con lo que se espera?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">25</span>,<span class="dv">55</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.2</span>, <span class="fl">0.79</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>test <span class="ot">=</span> <span class="fu">chisq.test</span>(x, <span class="at">p =</span> p)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in chisq.test(x, p = p): Chi-squared approximation may be incorrect</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(test)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Chi-squared test for given probabilities
+
+data:  x
+X-squared = 98.379, df = 2, p-value &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>Se rechaza la hipótesis nula, por lo que al menos una de las proporciones es distinta de la establecida. Para saber cual, analizamos los residuales estandarizados de las frecuencias.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>expected</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  0.9 18.0 71.1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>stdres</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  9.640566  1.844662 -4.166596</code></pre>
+</div>
+</div>
+<p><strong>Ejemplo</strong>: Lanzamiento de un dado.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">60</span>, <span class="dv">90</span>, <span class="dv">120</span>, <span class="dv">300</span>, <span class="dv">230</span>, <span class="dv">150</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>test <span class="ot">=</span> <span class="fu">chisq.test</span>(x)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(test)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Chi-squared test for given probabilities
+
+data:  x
+X-squared = 259.47, df = 5, p-value &lt; 2.2e-16</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>stdres</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -8.5606198 -5.9489053 -3.3371908 12.3330963  6.2390958 -0.7254763</code></pre>
+</div>
+</div>
+</section>
+<section id="pruebas-de-independencia" class="level3" data-number="3.3.4">
+<h3 data-number="3.3.4" class="anchored" data-anchor-id="pruebas-de-independencia"><span class="header-section-number">3.3.4</span> Pruebas de independencia</h3>
+<p>Suponga que tenemos dos variables categóticas <span class="math inline">\(X\)</span> y <span class="math inline">\(Y\)</span> , la primera con <span class="math inline">\(k\)</span> categorías y la segunda con <span class="math inline">\(l\)</span> categorías. El objetivo eas saber si existe una relación entre ambas variables, o si son independientes.</p>
+<p><strong>Ejemplo</strong>: Se desea saber si existe asociación entre el color de cabello y el color de ojos.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">9</span>, <span class="dv">17</span>, <span class="dv">13</span>, <span class="dv">40</span>, <span class="dv">25</span>, <span class="dv">10</span>, <span class="dv">17</span>, <span class="dv">23</span>, <span class="dv">22</span>, <span class="dv">5</span>), <span class="at">nrow =</span> <span class="dv">3</span>, <span class="at">ncol =</span> <span class="dv">4</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4]
+[1,]    5    7    9   17
+[2,]   13   40   25   10
+[3,]   17   23   22    5</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(x) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Cabello negro"</span>, <span class="st">"Cabello cafe"</span>, <span class="st">"Cabello rubio"</span>, <span class="st">"Cabello rojo"</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Cabello negro Cabello cafe Cabello rubio Cabello rojo
+[1,]             5            7             9           17
+[2,]            13           40            25           10
+[3,]            17           23            22            5</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(x) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Ojos negros"</span>, <span class="st">"Ojos cafes"</span>, <span class="st">"Ojos verdes"</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Cabello negro Cabello cafe Cabello rubio Cabello rojo
+Ojos negros             5            7             9           17
+Ojos cafes             13           40            25           10
+Ojos verdes            17           23            22            5</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>test <span class="ot">=</span> <span class="fu">chisq.test</span>(x)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(test)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test
+
+data:  x
+X-squared = 32.151, df = 6, p-value = 1.526e-05</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>stdres</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Cabello negro Cabello cafe Cabello rubio Cabello rojo
+Ojos negros    -0.8884875   -2.5536365    -0.8080597     5.207786
+Ojos cafes     -1.1097272    2.4297729    -0.1699517    -1.783974
+Ojos verdes     1.9031335   -0.4090045     0.8527636    -2.483601</code></pre>
+</div>
+</div>
+<p><strong>Ejemplo</strong>: Aasociación entre variables cagtegóricas de la base de datos de COVID. Comenzamos analizando la relación entre Obesidad y Diabetes.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>D <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"Data/COVID19MEXICO.csv"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">as.is =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(D<span class="sc">$</span>DIABETES)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  2  1 98</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(D<span class="sc">$</span>OBESIDAD)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  2  1 98</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>tab1 <span class="ot">=</span> <span class="fu">table</span>(D<span class="sc">$</span>DIABETES, D<span class="sc">$</span>OBESIDAD)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tab1) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Obesisdad si"</span>, <span class="st">"Obseidad no"</span>, <span class="st">"Desconocido"</span>)</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tab1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    
+     Obesisdad si Obseidad no Desconocido
+  1          3846       17702           9
+  2          8620      148209          17
+  98           27          64         106</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(tab1) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Diabetes si"</span>, <span class="st">"Diabetes no"</span>, <span class="st">"Desconocido"</span>)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tab1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             
+              Obesisdad si Obseidad no Desconocido
+  Diabetes si         3846       17702           9
+  Diabetes no         8620      148209          17
+  Desconocido           27          64         106</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>test <span class="ot">=</span> <span class="fu">chisq.test</span>(tab1[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(test)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test with Yates' continuity correction
+
+data:  tab1[1:2, 1:2]
+X-squared = 4444.9, df = 1, p-value &lt; 2.2e-16</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>test<span class="sc">$</span>stdres</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             
+              Obesisdad si Obseidad no
+  Diabetes si     66.68459   -66.68459
+  Diabetes no    -66.68459    66.68459</code></pre>
+</div>
+</div>
+<p>Los resultados muestran que la presencia de diabetes está relacionada con la presencia de obesidad.</p>
+<p>Ahora, analizamos la relación entre Tipo de paciente y la presencia de hipertensión.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>tab2 <span class="ot">=</span> <span class="fu">table</span>(D<span class="sc">$</span>TIPO_PACIENTE, D<span class="sc">$</span>HIPERTENSION)</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tab2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   
+        1     2    98
+  1 10997 97491    67
+  2 15936 54004   105</code></pre>
+</div>
+</div>
+<p>Es posible crear una variable con sólo algunas categorías de una variable categórica.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>pais <span class="ot">=</span> <span class="fu">ifelse</span>(D<span class="sc">$</span>PAIS_NACIONALIDAD <span class="sc">==</span> <span class="st">"México"</span>, <span class="st">"Mexico"</span>, <span class="st">"otro"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="apéndice-distribuciones-de-probabilidad-en-r" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="apéndice-distribuciones-de-probabilidad-en-r"><span class="header-section-number">3.4</span> Apéndice: Distribuciones de probabilidad en R</h2>
+<p>En R están implementadas todas las distribuciones de probabilidad clásicas: Normal, Binomial, Geométrica, Poisson, Beta, Gamma, Cauchy, t-Student, F de Fisher, etc.</p>
+<p>Hay cuatro comandos básicos para trabajar con estas distribuciones:</p>
+<ul>
+<li><p>dnorm: evaluar la función de densidad de una v.a. normal</p></li>
+<li><p>pnorm: evaluar la función de distribución acumulada</p></li>
+<li><p>qnorm: permite calcular cuantiles de la distribución normal</p></li>
+<li><p>rnorm: genera números aleatorios de la distribución normal</p></li>
+</ul>
+<section id="distribución-normal" class="level3" data-number="3.4.1">
+<h3 data-number="3.4.1" class="anchored" data-anchor-id="distribución-normal"><span class="header-section-number">3.4.1</span> Distribución Normal</h3>
+<p>La distribución Normal o Gaussiana es un modelo de probabilidad cuya función de densidad tiene forma de campana y está dada por la siguiente ecuación: <span class="math display">\[ f(x) = \frac{1}{\sqrt{2\pi} \sigma}\exp\left\{-\frac{1}{2\sigma^2} (x-\mu)^2\right\},\]</span> donde <span class="math inline">\(\mu\)</span> representa la media poblacional y <span class="math inline">\(\sigma\)</span> representa la desviación estándar poblacional.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">4</span>, <span class="at">length.out =</span> <span class="dv">100</span>)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>fx <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(x)</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, fx, <span class="at">ylab =</span> <span class="st">"f(x)"</span>,</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Función de densidad Normal"</span>,</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">lwd =</span> <span class="dv">3</span>,</span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"dodgerblue"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_inferencia_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Ejemplo</strong>. Suponga que el tiempo (en horas) que tarda un estudiante en resolver un examen de inglés es una variable aleatoria que sigue una distribución <span class="math inline">\(N(2.5, .7)\)</span>. Para entender las implicaciones de esta afirmación, vamos a graficar la función de densidad de esta variable.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">=</span> <span class="fl">2.5</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> <span class="fl">0.7</span></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">seq</span>(mu <span class="sc">-</span> <span class="dv">3</span><span class="sc">*</span>sigma, mu <span class="sc">+</span> <span class="dv">3</span><span class="sc">*</span>sigma, <span class="at">length.out =</span> <span class="dv">100</span>)</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>fx <span class="ot">=</span> <span class="fu">dnorm</span>(x, mu, sigma)</span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, fx, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"magenta"</span>, <span class="at">lwd =</span> <span class="dv">3</span>,</span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Densidad"</span>,</span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Tiempo (horas)"</span>,</span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Distribución del tiempo para resolver el examen"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_inferencia_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La gráfica muestra que el tiempo medio que tardan los estudiantes es de 2.5 horas y que al 99.7% de ellos les toma entre 0.4 y 4.6 horas terminar el examen.</p>
+<p>Si queremos saber que tan probable es que alguien tarde más de tres horas y media, es decir <span class="math inline">\(P(X&gt;3.5)\)</span>, podemos usar el comando <code>pnorm</code>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="fl">3.5</span>, mu, sigma, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.07656373</code></pre>
+</div>
+</div>
+<p>Si queremos <span class="math inline">\(P(X\leq 1)\)</span>, entonces usamos el comando:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="dv">1</span>, mu, sigma)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.01606229</code></pre>
+</div>
+</div>
+<p>Si queremos <span class="math inline">\(P(1.5 \leq X \leq 2.7)\)</span>, el comando sería:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="fl">2.7</span>, mu, sigma) <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="fl">1.5</span>, mu, sigma)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5358878</code></pre>
+</div>
+</div>
+<p>Supongamos que ahora queremos determinar el tiempo que debemos asignar al examen para garantizar que el 98% de los estudiantes pueda terminarlo. Para esto debemos calcular el cuantil de nivel 0.98, es decir, el tiempo en el que se acumula una probabilidad de 0.98. Esto se logra con el comando <code>qnorm</code>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qnorm</span>(<span class="fl">0.98</span>, mu, sigma)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3.937624</code></pre>
+</div>
+</div>
+<p>Por último, el comando <code>rnorm</code> nos sirve para generar números aleatorios de la distribución Normal. En el contexto del ejemplo, esto es equivalente a simular en la computadora los tiempos de resolución del examen.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rnorm</span>(<span class="dv">5</span>, mu, sigma)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.965265 2.557373 3.020120 2.441184 1.944974</code></pre>
+</div>
+</div>
+</section>
+<section id="distribución-binomial" class="level3" data-number="3.4.2">
+<h3 data-number="3.4.2" class="anchored" data-anchor-id="distribución-binomial"><span class="header-section-number">3.4.2</span> Distribución Binomial</h3>
+<p>Suponga que se tiene un experimento o fenómeno binario que se repite <span class="math inline">\(n\)</span> veces de forma independiente. Más aún, suponga que la probabilidad de éxito no cambia entre repeticiones. Sea <span class="math inline">\(X\)</span> la v.a. que indica el número de éxitos en <span class="math inline">\(n\)</span> repeticiones. A <span class="math inline">\(X\)</span> se le conoce como v.a. Binomial de parámetros <span class="math inline">\(n\)</span> y <span class="math inline">\(p\)</span>, donde <span class="math inline">\(p\)</span> es un número entre 0 y 1, el cual representa la probabilidad de éxito en cada repetición. la función de probabilidad asociada a este tipo de variables está dada por: <span class="math display">\[ P(X=x) = \begin{cases}
+{n \choose x}p^x (1-p)^{n-x}, \quad &amp; \text{si } x = 0,1,2,...,n;\\
+0 &amp; \text{otro caso.}
+\end{cases}\]</span></p>
+<p><strong>Ejemplo</strong>: Suponga que se lanza una moneda justa 10 veces. Nos interesa conocer la distribución de probabilidad del número de águilas. Si <span class="math inline">\(X\)</span> es la variable que cuenta el número de águilas en 10 lanzamientos, entonces podemos afirmar que <span class="math inline">\(X\)</span> sigue una distribución Binomial de parámetros <span class="math inline">\(n = 10\)</span> y <span class="math inline">\(p=0.5\)</span>. Abajo se muestra la gráfica de la función de probabilidad del número de águilas.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">10</span></span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>p <span class="ot">=</span> <span class="fl">0.5</span></span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>fx <span class="ot">=</span> <span class="fu">dbinom</span>(x, n, p)</span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, fx, <span class="at">type =</span> <span class="st">"h"</span>, <span class="at">lwd =</span> <span class="dv">5</span>, <span class="at">col =</span><span class="st">"blue"</span>,</span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Número de águilas"</span>,</span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Probabilidad"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_inferencia_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Nos interesa saber que tan probable es que haya 2 o menos águilas. Para esto usamos el comando <code>pbinom</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pbinom</span>(<span class="dv">2</span>, n, p)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0546875</code></pre>
+</div>
+</div>
+<p>Podemos calcular también cuantiles de la distribución binomial usando el comando <code>qbinom</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qbinom</span>(<span class="fl">0.5</span>, n, p)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5</code></pre>
+</div>
+</div>
+<p>Podemos generar valores aleatorios de esta distribución usamos el comando <code>rbinom</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rbinom</span>(<span class="dv">10</span>, n, p)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 4 4 6 3 8 2 6 2 2 5</code></pre>
+</div>
+</div>
+<p><strong>Ejemplo</strong>: ¿Qué tan probable es tener 7 hijas en 7 nacimientos si suponemos que la probabilidad de niño o niña es igual? Para contestar la pregunta, suponemos que los nacimientos son independientes y que la probabilidad de tener una niña (niño) no cambia. Luego, el número de hijas en suite partos, <span class="math inline">\(X\)</span>, es una variable aleatoria Binomial de parámetros <span class="math inline">\(n=7\)</span> y <span class="math inline">\(p = 0.5\)</span>. Luego, <span class="math inline">\(P[X=7]\)</span> esta dada por:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">7</span></span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">=</span> <span class="fl">0.5</span></span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dbinom</span>(<span class="dv">7</span>, n, p) <span class="co"># P(X = 7)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0078125</code></pre>
+</div>
+</div>
+<p>Esto implica que, en promedio, 8 de cada mil parejas que decidan tener 7 hijos tendrían 7 mujeres.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./02_descriptiva.html" class="pagination-link" aria-label="Estadística Descriptiva">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Estadística Descriptiva</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./04_anova.html" class="pagination-link" aria-label="Análisis de varianza (ANOVA)">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Análisis de varianza (ANOVA)</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
